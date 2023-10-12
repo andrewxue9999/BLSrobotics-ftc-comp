@@ -21,7 +21,6 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, -35, Math.toRadians(0)))
                                 // Simple auto test
-                                .waitSeconds(0)
 
 
 
@@ -100,7 +99,6 @@ public class MeepMeepTesting {
                                 // splineToSplineHeading acts similar to splineToSplineHeading
                                 // As the robot moves to the Pose2d on a spline path, it interpolates the heading through a spline
                                 .splineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)), Math.toRadians(0))
-
 
 
 
