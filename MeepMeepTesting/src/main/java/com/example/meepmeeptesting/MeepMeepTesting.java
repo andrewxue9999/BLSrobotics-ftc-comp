@@ -27,23 +27,23 @@ public class MeepMeepTesting {
                                 // The robot can move in 4 different directions independently thanks to our mecanum wheels/
                                 // We can move forwards, backwards, strafe left, and strafe right
                                 // Drive forward 40 inches
-                                .forward(40)
+//                                .forward(40)
 
                                 // Drive backward 40 inches
-                                .back(40)
+//                                .back(40)
 
                                 // Strafe left 40 inches
-                                .strafeLeft(40)
+//                                .strafeLeft(40)
 
                                 // Strafe right 40 inches
-                                .strafeRight(40)
+//                                .strafeRight(40)
 
                                 // We can also preform simple turns or wait a given amount of time
-                                // Turn 45 degrees counter-clockwise
-                                .turn(Math.toRadians(45))
+                                // Turn 90 degrees counter-clockwise
+//                                .turn(Math.toRadians(90))
 
                                 // Wait 3 seconds
-                                .waitSeconds(3)
+//                                .waitSeconds(3)
 
                                 // Roadrunner also carries some more complex ways to get the robot to move somewhere
                                 // Before, we get into that, let's talk a bit about heading and how positioning works
@@ -65,19 +65,19 @@ public class MeepMeepTesting {
                                 // Line to forces the robot to move to a specified VECTOR.
                                 // The robot will maintain it's heading (direction) which is starts out with.
                                 // lineTo is functionally the same as strafeTo and lineToConstantHeading
-                                .lineTo(new Vector2d(40, 40))
+//                                .lineTo(new Vector2d(40, 40))
 
                                 // lineToLinearHeading does exactly as it's name suggests.
                                 // The robot will move to the POSE while linearly changing between the start heading and end heading
                                 // Here, the robot moves to the new POSE while changing it's direction
-                                .lineToLinearHeading(new Pose2d(40, 40, Math.toRadians(90)))
+//                                .lineToLinearHeading(new Pose2d(40, 40, Math.toRadians(90)))
 
                                 // lineToSplineHeading is similar to lineToLinearHeading
                                 // The robot will move to the POSE while SPLINE interpolating between the start and end heading
                                 // What is spline interpolating?
                                 // Spline interpolating (at it's most fundamental level) is changing between two values through a parabolic or cubic function
                                 // Essentially, the action is eased-in and eased-out, resulting a smoother movement.
-                                .lineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)))
+//                                .lineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)))
 
                                 // splineTo is slightly different than lineTo
                                 // While lineTo has the robot move in a straight line to the specified VECTOR, splineTo moves in a spline
@@ -85,20 +85,20 @@ public class MeepMeepTesting {
                                 // Similar to lineTo, the robot will start and end at the same heading (direction)
                                 // However, unlike lineTo, the robot WILL TURN and avoid strafing (moving left or right) as much as possible
                                 // splineTo requires a Pose2d and end tangent (in radians). The end tangent affects the path of the robot
-                                .splineTo(new Vector2d(40, 40), Math.toRadians(0))
+//                                .splineTo(new Vector2d(40, 40), Math.toRadians(0))
 
                                 // Unlike lineTo and lineToConstantHeading, splineTo and splineToConstantHeading act differently
                                 // While splineTo permits the robot the change heading while moving, splineToConstantHeading does not
                                 // This means that the robot will be facing one direction throughout it's path
-                                .splineToConstantHeading(new Vector2d(40, 40), Math.toRadians(0))
+//                                .splineToConstantHeading(new Vector2d(40, 40), Math.toRadians(0))
 
                                 // splineToLinearHeading acts similar to lineToLinearHeading
                                 // As the robot moves to the Vector2d on a spline path, it changes its heading linearly
-                                .splineToLinearHeading(new Pose2d(40, 40, Math.toRadians(90)), Math.toRadians(0))
+//                                .splineToLinearHeading(new Pose2d(40, 40, Math.toRadians(90)), Math.toRadians(0))
 
                                 // splineToSplineHeading acts similar to splineToSplineHeading
                                 // As the robot moves to the Pose2d on a spline path, it interpolates the heading through a spline
-                                .splineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)), Math.toRadians(0))
+//                                .splineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)), Math.toRadians(0))
 
 
 
@@ -107,7 +107,8 @@ public class MeepMeepTesting {
                 );
 
         Image img = null;
-        try { img = ImageIO.read(new File("D:\\Program files\\Android Studio\\FTC 2023-2024\\AndrewFTC\\FtcRobotController\\MeepMeepTesting\\centerstage-bg.png")); }
+        // Pathname requires the path to the file of the background image (png)
+        try { img = ImageIO.read(new File("C:\\Users\\HP\\Documents\\JAVA FTC\\FTC 2023-2024\\FtcRobotController\\MeepMeepTesting\\centerstage-bg.png")); }
         catch (IOException e) {}
 
         meepMeep.setBackground(img)
