@@ -49,6 +49,8 @@ import java.util.concurrent.TimeUnit;
  * This OpMode illustrates using a camera to locate and drive towards a specific AprilTag.
  * The code assumes a basic two-wheel (Tank) Robot Drivetrain
  *
+<<<<<<< HEAD
+=======
  * For an introduction to AprilTags, see the ftc-docs link below:
  * https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html
  *
@@ -56,6 +58,7 @@ import java.util.concurrent.TimeUnit;
  * This information is provided in the "ftcPose" member of the returned "detection", and is explained in the ftc-docs page linked below.
  * https://ftc-docs.firstinspires.org/apriltag-detection-values
  *
+>>>>>>> f326c0d033b69a476dea0a06bc394103e504a0ca
  * The driving goal is to rotate to keep the tag centered in the camera, while driving towards the tag to achieve the desired distance.
  * To reduce any motion blur (which will interrupt the detection process) the Camera exposure is reduced to a very low value (5mS)
  * You can determine the best exposure and gain values by using the ConceptAprilTagOptimizeExposure OpMode in this Samples folder.
@@ -104,7 +107,7 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
     private DcMotor rightDrive  = null;  //  Used to control the right drive wheel
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static final int DESIRED_TAG_ID = -1;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    private static final int DESIRED_TAG_ID = 0;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -167,12 +170,16 @@ public class RobotAutoDriveToAprilTagTank extends LinearOpMode
 
             // Tell the driver what we see, and what to do.
             if (targetFound) {
+                telemetry.addData(">","HOLD Left-Bumper to Drive to Target\n");
+                telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+                telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+            } else {
+                telemetry.addData(">","Drive using joysticks to find valid target\n");
                 telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
                 telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
                 telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            } else {
-                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
             }
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .

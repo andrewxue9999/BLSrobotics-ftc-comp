@@ -44,6 +44,8 @@ import java.util.List;
  * This OpMode illustrates the basics of AprilTag recognition and pose estimation,
  * including Java Builder structures for specifying Vision parameters.
  *
+<<<<<<< HEAD
+=======
  * For an introduction to AprilTags, see the FTC-DOCS link below:
  * https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html
  *
@@ -61,6 +63,7 @@ import java.util.List;
  * There are many "default" VisionPortal and AprilTag configuration parameters that may be overridden if desired.
  * These default parameters are shown as comments in the code below.
  *
+>>>>>>> f326c0d033b69a476dea0a06bc394103e504a0ca
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
@@ -123,8 +126,6 @@ public class ConceptAprilTag extends LinearOpMode {
 
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
-
-            // The following default settings are available to un-comment and edit as needed.
             //.setDrawAxes(false)
             //.setDrawCubeProjection(false)
             //.setDrawTagOutline(true)
@@ -163,7 +164,6 @@ public class ConceptAprilTag extends LinearOpMode {
         //builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
         //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);

@@ -59,6 +59,8 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 
 # Release Information
 
+<<<<<<< HEAD
+=======
 ## Version 9.0.1 (20230929-083754)
 
 ### Enhancements
@@ -72,6 +74,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 ### Bug Fixes
 * Fixes a problem where after October 1 the Driver Station will report as obsolete on v9.0 and prompt the user to update.
 
+>>>>>>> f326c0d033b69a476dea0a06bc394103e504a0ca
 ## Version 9.0 (20230830-154348)
 
 ### Breaking Changes
