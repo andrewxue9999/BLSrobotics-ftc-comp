@@ -108,7 +108,7 @@ public class MeepMeepTesting {
 
         Image img = null;
         // Pathname requires the path to the file of the background image (png)
-        try { img = ImageIO.read(new File("C:\\Users\\HP\\Documents\\JAVA FTC\\FTC 2023-2024\\FtcRobotController\\MeepMeepTesting\\centerstage-bg.png")); }
+        try { img = ImageIO.read(new File("C:\\Users\\Public\\Public Pictures\\centerstage-bg.png")); }
         catch (IOException e) {}
 
         meepMeep.setBackground(img)
