@@ -13,13 +13,28 @@ import javax.imageio.ImageIO;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(500);
+        MeepMeep meepMeep = new MeepMeep(800);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(49.47254984116122, 49.47254984116122, Math.toRadians(180), Math.toRadians(180), 14.2)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-60, -35, Math.toRadians(0)))
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(64.20, -34.74, Math.toRadians(182.08)))
+                                /*.splineToLinearHeading(new Pose2d(24.19, -35.75, Math.toRadians(183.11)), Math.toRadians(183.11))
+                                .splineToLinearHeading(new Pose2d(7.44, -21.59, Math.toRadians(91.64)), Math.toRadians(85.43))
+                                .lineToLinearHeading(new Pose2d(6.86, 9.03, Math.toRadians(180.00)))
+                                .lineToConstantHeading(new Vector2d(17.69, 32.28))
+                                .lineTo(new Vector2d(31.13, 51.20))*/
+
+
+
+
+
+
+
+
+
+
+                                //drive.trajectorySequenceBuilder(new Pose2d(-60, -35, Math.toRadians(0)))
                                 // Simple auto test
 
 
@@ -27,7 +42,15 @@ public class MeepMeepTesting {
                                 // The robot can move in 4 different directions independently thanks to our mecanum wheels/
                                 // We can move forwards, backwards, strafe left, and strafe right
                                 // Drive forward 40 inches
-//                                .forward(40)
+
+                                .waitSeconds(1)
+
+                                .forward(30)
+                                .waitSeconds(1)
+                                .forward(10)
+
+                                .splineToLinearHeading(new Pose2d(23, -10, Math.toRadians(0)), Math.toRadians(300))
+                                .splineToLinearHeading(new Pose2d(50, -34, Math.toRadians(0)), Math.toRadians(180))
 
                                 // Drive backward 40 inches
 //                                .back(40)
@@ -77,7 +100,7 @@ public class MeepMeepTesting {
                                 // What is spline interpolating?
                                 // Spline interpolating (at it's most fundamental level) is changing between two values through a parabolic or cubic function
                                 // Essentially, the action is eased-in and eased-out, resulting a smoother movement.
-//                                .lineToSplineHeading(new Pose2d(40, 40, Math.toRadians(90)))
+//                                .lineToSplineHeading(new Pose2d(40, 40, Math.toRadians(180)))
 
                                 // splineTo is slightly different than lineTo
                                 // While lineTo has the robot move in a straight line to the specified VECTOR, splineTo moves in a spline
@@ -85,11 +108,11 @@ public class MeepMeepTesting {
                                 // Similar to lineTo, the robot will start and end at the same heading (direction)
                                 // However, unlike lineTo, the robot WILL TURN and avoid strafing (moving left or right) as much as possible
                                 // splineTo requires a Pose2d and end tangent (in radians). The end tangent affects the path of the robot
-//                                .splineTo(new Vector2d(40, 40), Math.toRadians(0))
+//                                .splineTo(new Vector2d(0, 0), Math.toRadians(0))
 
                                 // Unlike lineTo and lineToConstantHeading, splineTo and splineToConstantHeading act differently
                                 // While splineTo permits the robot the change heading while moving, splineToConstantHeading does not
-                                // This means that the robot will be facing one direction throughout it's path
+                                // This means that the robot will be facing one direction throughout its path
 //                                .splineToConstantHeading(new Vector2d(40, 40), Math.toRadians(0))
 
                                 // splineToLinearHeading acts similar to lineToLinearHeading
@@ -106,14 +129,20 @@ public class MeepMeepTesting {
                                 .build()
                 );
 
+
+        /*meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
+                .setDarkMode(true)
+                .setBackgroundAlpha(0.95f)
+                .addEntity(myBot)
+                .start();*/
         Image img = null;
         // Pathname requires the path to the file of the background image (png)
-        try { img = ImageIO.read(new File("C:\\Users\\Public\\Public Pictures\\centerstage-bg.png")); }
+        try { img = ImageIO.read(new File("C:\\Users\\Public\\Pictures\\centerstage-bg.png")); }
         catch (IOException e) {}
 
         meepMeep.setBackground(img)
                 .setDarkMode(true)
-                .setBackgroundAlpha(0.95f)
+                .setBackgroundAlpha(1f)
                 .addEntity(myBot)
                 .start();
     }
