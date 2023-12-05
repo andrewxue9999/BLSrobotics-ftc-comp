@@ -12,7 +12,7 @@ public class MeepMeepTesting2 {
         MeepMeep meepMeep = new MeepMeep(800);
 
         // beginning position
-        Pose2d startPose = new Pose2d(36, 60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(36, 70, Math.toRadians(-90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeRedDark())
@@ -21,10 +21,11 @@ public class MeepMeepTesting2 {
 
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .splineTo(new Vector2d(60, 0), Math.toRadians(90))
-                                .splineTo(new Vector2d(-60, 0), Math.toRadians(-180))
-                                .splineTo(new Vector2d(36, 0), 0)
-                                .strafeLeft(60)
+                                .splineTo(new Vector2d(11, 38), Math.toRadians(90)) // PROGRAM PROCESS TO DETECT PIXEL LOCATION
+                                .lineToLinearHeading(new Pose2d(11, 47, Math.toRadians(0))) // done detecting custom game piece and placing purple pixel
+                                .splineTo(new Vector2d(51, 33), Math.toRadians(0)) // place yellow pixel based on custom game piece position
+                                .splineToConstantHeading(new Vector2d(-51, 33), Math.toRadians(0)) // "back" is inaccurate because it relies on relative position, and regular splining takes too long
+                                .splineToConstantHeading(new Vector2d(51, 33), Math.toRadians(0)) // place white pixels; end
                                 .build()
                 );
 
