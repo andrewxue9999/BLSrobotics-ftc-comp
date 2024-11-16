@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
-import org.firstinspires.ftc.teamcode.util.PIDFController;
+
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 //import org.firstinspires.ftc.teamcode.common.hardware.AbsoluteAnalogEncoder;
@@ -49,7 +50,7 @@ public class SwerveTeleop extends LinearOpMode {
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     private double voltage = 1;
-    private PIDFController scontroller = new PIDFController(new PIDFController.PIDCoefficients(1.0, 1.0,1.0));
+    private PIDFController scontroller = new PIDFController(1.0, 0, 1.0, 0);
 
     @Override
     public void runOpMode() {
@@ -76,7 +77,7 @@ public class SwerveTeleop extends LinearOpMode {
         sleftBack = hardwareMap.get(CRServo.class, "sbackLeft");
         srightBack = hardwareMap.get(CRServo.class, "sbackRight");
 
-        PIDFController.PIDCoefficients scoefRightFront = new PIDFController.PIDCoefficients(1.0, 1.0,1.0);
+//        PIDFController.PIDCoefficients scoefRightFront = new PIDFController.PIDCoefficients(1.0, 1.0,1.0);
 
         //encoders stuff
         erightFront =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontRight"), 3.3);
@@ -124,8 +125,16 @@ public class SwerveTeleop extends LinearOpMode {
 
             if (Math.abs(driveX) >= 0.05) {
                 double rotationAmount = Math.PI / 2;
+                double output = scontroller.calculate(
+                        erightFront.getCurrentPosition(), rotationAmount
+                );
 
+                while (erightFront.getCurrentPosition() != rotationAmount) {
+                    srightFront.setPower(1.1); //CAHNGE POWER VALUE
+                    output = scontroller.calculate(erightFront.getCurrentPosition(), rotationAmount);
+                }
 
+                srightFront.setPower(0);
             }
 
             rightFrontPower = Range.clip(driveY - azimuth, -1.0, 1.0);
