@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.PIDFController;
+import org.firstinspires.ftc.teamcode.util.Point;
+import org.firstinspires.ftc.teamcode.util.Pose;
 //import org.firstinspires.ftc.teamcode.common.hardware.AbsoluteAnalogEncoder;
 
 
@@ -46,7 +48,8 @@ public class SwerveTeleop extends LinearOpMode {
     public final double TRACKWIDTH = 12.6378;
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
-
+    private double voltage = 1;
+    private PIDFController scontroller = new PIDFController(new PIDFController.PIDCoefficients(1.0, 1.0,1.0));
 
     @Override
     public void runOpMode() {
@@ -115,6 +118,15 @@ public class SwerveTeleop extends LinearOpMode {
 
             double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
+            // future: use trig (cosine) to find angle for heading
+            // for now: any amount of left/right that's above 0.05 will result in direct 90 degree rotation of servos
+            // crservos gain voltage until target reached
+
+            if (Math.abs(driveX) >= 0.05) {
+                double rotationAmount = Math.PI / 2;
+
+
+            }
 
             rightFrontPower = Range.clip(driveY - azimuth, -1.0, 1.0);
             leftFrontPower = Range.clip(driveY + azimuth, -1.0, 1.0);
@@ -127,8 +139,9 @@ public class SwerveTeleop extends LinearOpMode {
             mrightBack.setPower(rightBackPower);
 
 
-            double testServoPower = gamepad1.left_stick_y;
-//            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
+
+//            double testServoPower = gamepad1.left_stick_y;
+////            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
 
 
             // Show the elapsed game time and wheel power.
@@ -136,6 +149,18 @@ public class SwerveTeleop extends LinearOpMode {
             telemetry.addData("Motors", "left front (%.2f), left back (%.2f), right front (%.2f), right back", leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             telemetry.update();
         }
+    }
+
+    private double joystickScalar(double num, double min) {
+        return joystickScalar(num, min, 0.66, 4);
+    }
+
+    private double joystickScalar(double n, double m, double l, double a) {
+        return Math.signum(n) * m
+                + (1 - m) *
+                (Math.abs(n) > l ?
+                        Math.pow(Math.abs(n), Math.log(l / a) / Math.log(l)) * Math.signum(n) :
+                        n / a);
     }
 
 }
