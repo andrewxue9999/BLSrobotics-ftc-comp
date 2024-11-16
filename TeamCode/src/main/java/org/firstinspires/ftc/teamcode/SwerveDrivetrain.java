@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
@@ -42,15 +43,31 @@ public class SwerveDrivetrain {
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     public static double leftFrontOffset = 0, leftBackOffset = 0, rightFrontOffset = 0, rightBackOffset = 0;
-    double[] ws;
-    double[] wa;
+    double[] wheelSpeeds;
+    double[] wheelAngles;
     double max = 0.0;
 
     public SwerveDrivetrain() {
-        leftFront = new SwerveModule(hardwareMap.get(DcMotorEx.class, "frontLeft"), hardwareMap.get(CRServo.class, "sfrontLeft"), new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET).setInverted(true));
-        leftBack = new SwerveModule(hardwareMap.get(DcMotorEx.class, "backLeft"), hardwareMap.get(CRServo.class, "sbackLeft"), new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET).setInverted(true));
-        rightFront = new SwerveModule(hardwareMap.get(DcMotorEx.class, "frontRight"), hardwareMap.get(CRServo.class, "sfrontRight"), new AbsoluteAnalogEncoder(erightFront, analogRangeRightFront).zero(E_FRONT_RIGHT_OFFSET).setInverted(true));
-        rightBack = new SwerveModule(hardwareMap.get(DcMotorEx.class, "backRight"), hardwareMap.get(CRServo.class, "sbackRight"), new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET).setInverted(true));
+
+        mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
+        mrightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+        mrightBack = hardwareMap.get(DcMotorEx.class, "backRight");
+
+        sleftFront = hardwareMap.get(CRServo.class, "sfrontLeft");
+        sleftBack = hardwareMap.get(CRServo.class, "sbackLeft");
+        srightFront = hardwareMap.get(CRServo.class, "sfrontRight");
+        srightBack = hardwareMap.get(CRServo.class, "sbackRight");
+
+        eleftFront = hardwareMap.get(AnalogInput.class, "efrontLeft");
+        eleftBack = hardwareMap.get(AnalogInput.class, "ebackLeft");
+        erightFront = hardwareMap.get(AnalogInput.class, "efrontRight");
+        erightBack = hardwareMap.get(AnalogInput.class, "ebackRight");
+
+        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET).setInverted(true));
+        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET).setInverted(true));
+        rightFront = new SwerveModule(mrightFront, srightFront, new AbsoluteAnalogEncoder(erightFront, analogRangeRightFront).zero(E_FRONT_RIGHT_OFFSET).setInverted(true));
+        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET).setInverted(true));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -71,17 +88,17 @@ public class SwerveDrivetrain {
                 c = y - head * (TRACKWIDTH / R),
                 d = y + head * (TRACKWIDTH / R);
 
-        ws = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
-        wa = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)};
+        wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
+        wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)};
     }
 
 
     public void write() {
         for (int i = 0; i < 4; i++) {
             SwerveModule m = swerveModules[i];
-            if (Math.abs(max) > 1) ws[i] /= max;
-            m.setMotorPower(Math.abs(ws[i]) + 0.1 * Math.signum(ws[i]));
-            m.setTargetRotation((wa[i]) % (2*Math.PI));
+            if (Math.abs(max) > 1) wheelSpeeds[i] /= max;
+            m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
+            m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
         }
     }
 
