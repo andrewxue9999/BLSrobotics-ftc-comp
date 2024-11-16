@@ -130,7 +130,7 @@ public class SwerveTeleop extends LinearOpMode {
                 );
 
                 while (erightFront.getCurrentPosition() != rotationAmount) {
-                    srightFront.setPower(1.1); //CAHNGE POWER VALUE
+                    srightFront.setPower(1.0);
                     output = scontroller.calculate(erightFront.getCurrentPosition(), rotationAmount);
                 }
 
