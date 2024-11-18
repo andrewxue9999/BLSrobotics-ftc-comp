@@ -17,20 +17,15 @@ public class TankTeleop extends LinearOpMode {
     private DcMotor leftBack = null;
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
-
-    private CRServo testServo = null;
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        leftBack  = hardwareMap.get(DcMotor.class, "leftBack");
-        rightFront  = hardwareMap.get(DcMotor.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-
-        testServo = hardwareMap.get(CRServo.class, "liftMotor2");
+        leftFront  = hardwareMap.get(DcMotor.class, "frontLeft ");
+        leftBack  = hardwareMap.get(DcMotor.class, "backLeft");
+        rightFront  = hardwareMap.get(DcMotor.class, "frontRight");
+        rightBack = hardwareMap.get(DcMotor.class, "backRight");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -39,9 +34,6 @@ public class TankTeleop extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-
-        testServo.setDirection(DcMotorSimple.Direction.FORWARD);
-
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -73,11 +65,7 @@ public class TankTeleop extends LinearOpMode {
             rightFront.setPower(rightFrontPower);
             rightBack.setPower(rightBackPower);
 
-
-            double testServoPower = gamepad1.left_stick_y;
-//            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
-
-            testServo.setPower(testServoPower);
+            //            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

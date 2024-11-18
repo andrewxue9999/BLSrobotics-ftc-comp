@@ -20,10 +20,10 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 public class SwerveTeleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    public SwerveModule rightFront;
-    public SwerveModule leftFront;
-    public SwerveModule leftBack;
-    public SwerveModule rightBack;
+//    public SwerveModule rightFront;
+//    public SwerveModule leftFront;
+//    public SwerveModule leftBack;
+//    public SwerveModule rightBack;
     public SwerveModule[] swerveModules;
 
     public static final double E_FRONT_RIGHT_OFFSET = 1.1;//myArbitraryRadValue
@@ -36,7 +36,7 @@ public class SwerveTeleop extends LinearOpMode {
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     private double voltage = 1;
     private PIDFController scontroller = new PIDFController(1.0, 0, 1.0, 0);
-    private SwerveDrivetrain drivetrain;
+    public SwerveDrivetrain drivetrain;
 
 
     @Override
@@ -83,7 +83,7 @@ public class SwerveTeleop extends LinearOpMode {
 //        leftFront = new SwerveModule(mleftFront, sleftFront, eleftFront);
 //        leftBack = new SwerveModule(mleftBack, sleftBack, eleftBack);
 //        rightBack = new SwerveModule(mrightBack, srightBack, erightBack);
-        swerveModules = new SwerveModule[]{rightFront, leftFront, leftBack, rightBack};
+        //swerveModules = new SwerveModule[]{rightFront, leftFront, leftBack, rightBack};
 
         // Wait for the game to start (driver presses START)
         waitForStart();
