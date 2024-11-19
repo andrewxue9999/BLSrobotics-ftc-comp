@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import android.media.MediaCodec;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -47,8 +51,13 @@ public class SwerveDrivetrain {
     double[] wheelAngles;
     double max = 0.0;
 
-    public SwerveDrivetrain() {
+    private LinearOpMode myOpMode;
 
+    public SwerveDrivetrain(LinearOpMode opmode) {
+        myOpMode = opmode;
+    }
+
+    public void init() {
         mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
         mrightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
@@ -71,6 +80,11 @@ public class SwerveDrivetrain {
         rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET).setInverted(true));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
+
+        myOpMode.telemetry.addData(">", "hardware initialized!");
+        telemetry.update();
+
+
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 

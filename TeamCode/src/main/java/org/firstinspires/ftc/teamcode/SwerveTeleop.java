@@ -43,7 +43,7 @@ public class SwerveTeleop extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        drivetrain = new SwerveDrivetrain();
+        drivetrain = new SwerveDrivetrain(this);
 //        //motors stuff
 //        mrightFront  = hardwareMap.get(DcMotorEx.class, "frontRight");
 //        mleftFront  = hardwareMap.get(DcMotorEx.class, "frontLeft");
