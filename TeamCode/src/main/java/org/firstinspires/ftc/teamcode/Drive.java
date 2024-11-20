@@ -13,7 +13,7 @@ public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        drivetrain = new SwerveDrivetrain();
+        drivetrain = new SwerveDrivetrain(this);
 
     }
 

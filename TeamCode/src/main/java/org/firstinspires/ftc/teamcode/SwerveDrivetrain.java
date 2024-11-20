@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import android.media.MediaCodec;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
@@ -58,6 +57,12 @@ public class SwerveDrivetrain {
     }
 
     public void init() {
+
+        HardwareMap hardwareMap = myOpMode.hardwareMap;
+        Telemetry telemetry = myOpMode.telemetry;
+
+
+
         mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
         mrightFront = hardwareMap.get(DcMotorEx.class, "frontRight");

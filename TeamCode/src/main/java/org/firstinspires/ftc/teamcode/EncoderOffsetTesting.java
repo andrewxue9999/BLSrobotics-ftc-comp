@@ -20,6 +20,7 @@ public class EncoderOffsetTesting extends LinearOpMode {
     private AbsoluteAnalogEncoder efrontLeft;
     private AbsoluteAnalogEncoder ebackLeft;
     private AbsoluteAnalogEncoder ebackRight;
+    
 
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
