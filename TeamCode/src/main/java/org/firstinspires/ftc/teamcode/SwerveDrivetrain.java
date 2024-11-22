@@ -48,7 +48,7 @@ public class SwerveDrivetrain {
     public static double leftFrontOffset = 0, leftBackOffset = 0, rightFrontOffset = 0, rightBackOffset = 0;
     double[] wheelSpeeds;
     double[] wheelAngles;
-    double max = 1.0;
+    double max = 1.1;
 
     private LinearOpMode myOpMode;
 

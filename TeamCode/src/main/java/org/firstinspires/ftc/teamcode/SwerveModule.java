@@ -42,7 +42,7 @@ public class SwerveModule {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servo = s;
-        ((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000)); // change these numbers later??
+        //((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000)); // change these numbers later??
 
 
         encoder = e;
@@ -50,6 +50,10 @@ public class SwerveModule {
         scontroller = new PIDFController(P, I, D, 0);
 
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
     }
 
     public void read() {
