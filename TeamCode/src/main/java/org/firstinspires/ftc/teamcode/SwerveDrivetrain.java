@@ -37,18 +37,18 @@ public class SwerveDrivetrain {
     private static double analogRangeRightBack = 3.3;
 
 
-    public static final double E_FRONT_RIGHT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_FRONT_LEFT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_BACK_LEFT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_BACK_RIGHT_OFFSET = 1.1;//myArbitraryRadValue
+    public static final double E_FRONT_RIGHT_OFFSET = 5.858;//myArbitraryRadValue
+    public static final double E_FRONT_LEFT_OFFSET = 2.042;//myArbitraryRadValue
+    public static final double E_BACK_LEFT_OFFSET = 1.396;//myArbitraryRadValue
+    public static final double E_BACK_RIGHT_OFFSET = 5.440;//myArbitraryRadValue
 
-    public final double TRACKWIDTH = 12.6378;
+    public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     public static double leftFrontOffset = 0, leftBackOffset = 0, rightFrontOffset = 0, rightBackOffset = 0;
     double[] wheelSpeeds;
     double[] wheelAngles;
-    double max = 0.0;
+    double max = 1.0;
 
     private LinearOpMode myOpMode;
 

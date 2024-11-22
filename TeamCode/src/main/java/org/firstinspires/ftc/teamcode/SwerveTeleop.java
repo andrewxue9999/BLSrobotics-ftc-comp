@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 
-@TeleOp(name="2024-25 Swerve Teleopizzle2 Code", group="Linear OpMode")
+@TeleOp(name="2024-25 Swerve TeleOp Code", group="Linear OpMode")
 public class SwerveTeleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -134,6 +134,8 @@ public class SwerveTeleop extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Poopy", "Poop");
+            telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
+            telemetry.addData("Drivetrainz", drivetrain.getTelemetry());
 //            telemetry.addData("Motors", "left front (%.2f), left back (%.2f), right front (%.2f), right back", leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             telemetry.update();
         }
