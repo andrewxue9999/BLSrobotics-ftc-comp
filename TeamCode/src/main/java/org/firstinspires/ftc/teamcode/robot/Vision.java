@@ -13,26 +13,67 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 public class Vision {
 
     private Limelight3A limelight;
-    private double tx;
-    private double ty;
-    private Pose3D botPose;
+    private double tx; // how off we are horizontally, degrees
+    private double ty; // how off we are vertically, degrees
+    private Pose3D botPose; // (0, 0, 0) is center of field floor
 
     public void init(@NonNull HardwareMap hardwareMap, String name) {
         limelight = hardwareMap.get(Limelight3A.class, name);
         limelight.pipelineSwitch(0); // assuming apriltag pipeline = 0 when hardware is configured
+
+        limelight.setPollRateHz(100);
         limelight.start();
     }
 
-    public LLResult getData() {
+    // find how off we are from a tag, angle-wise.
+    public double[] getTagData() {
         LLResult result = limelight.getLatestResult();
 
-        botPose = result.getBotpose();
-        tx = result.getTx();
-        ty = result.getTy();
+        if (result != null && result.isValid()) {
+            botPose = result.getBotpose();
+            tx = result.getTx();
+            ty = result.getTy();
 
+            // result.getTa(): how big the target looks (0-100% of image)
+            return new double[]{tx, ty};
+        }
 //          String t = getTelemetrySpecific("tx", Double.toString(result.getTx())) + getTelemetrySpecific("ty", Double.toString(result.getTy())) + getTelemetrySpecific("Botpose", botpose.toString());return result;
+        return null;
+    }
 
-        return result;
+
+    // get current robot position with apriltags (only call if apriltag in view)
+    // "MegaTag 1"
+    public double[] getPosData() {
+        LLResult result = limelight.getLatestResult();
+
+        if (result != null && result.isValid()) {
+            botPose = result.getBotpose();
+            if (botPose != null) {
+                double x = botPose.getPosition().x;
+                double y = botPose.getPosition().y;
+
+                return new double[]{x, y};
+            }
+        }
+        return null;
+    }
+
+    // could be useful for incorporating time delay/lag into detecting our true robot position
+    public long getOffset() {
+        return limelight.getLatestResult().getStaleness();
+    }
+
+    // take a snapshot, puts it onto the web interface's Input Tb
+    // can use the snapshot as "image source" to tune pipelines
+    public String takeSnapshot() {
+        limelight.captureSnapshot("auto_pov_10s");
+        return "Snapshot taken"; // return string to be incorporated into telemetry via Teleop.java
+    }
+
+    public String clearSnapshots() {
+        limelight.deleteSnapshots();
+        return "Snapshots deleted";
     }
 
     // general case, for debugging
@@ -65,4 +106,20 @@ public class Vision {
         if (result != null) {
             if (result.isValid()) {
                 Pose3D botpose = result.getBotpose_MT2();
+ */
+
+/*
+MegaTag 2 is like MegaTag 1, but it fuses your IMU data for increased accuracy:
+
+// First, tell Limelight which way your robot is facing
+double robotYaw = imu.getAngularOrientation().firstAngle;
+limelight.updateRobotOrientation(robotYaw);
+if (result != null && result.isValid()) {
+    Pose3D botpose_mt2 = result.getBotpose_MT2();
+    if (botpose_mt2 != null) {
+        double x = botpose_mt2.getPosition().x;
+        double y = botpose_mt2.getPosition().y;
+        telemetry.addData("MT2 Location:", "(" + x + ", " + y + ")");
+    }
+}
  */
