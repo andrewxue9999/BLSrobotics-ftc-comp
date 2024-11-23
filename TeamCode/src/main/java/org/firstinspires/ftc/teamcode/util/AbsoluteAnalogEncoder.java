@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.roadrunner.Angle;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
-import org.firstinspires.ftc.teamcode.Angle;
-
 @Config
 public class AbsoluteAnalogEncoder {
     public static double DEFAULT_RANGE = 3.3;

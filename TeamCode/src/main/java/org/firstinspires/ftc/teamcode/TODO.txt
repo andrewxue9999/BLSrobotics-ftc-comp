@@ -1,0 +1,22 @@
+Drivetrain:
+1. Clean up SwerveDrivetrain constructor Linear Opmode inefficiencies (including when it is instantiated in Teleop.java)
+2. #1 can be accomplished by having hardwareMap as an argument in the constructor or init(), and changing the telemetry method to just a methods that returns strings that can be called in Teleop.java
+3. Ask the Wangster if turning on swerve code now works
+
+Vision:
+1. Set Up Limelight on Control Hub: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/setup
+2. Set Up Limelight Apriltag Pipeline: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/pipelines
+3. Integrate Vision.java into Teleop.java once the hardware is set up
+4. Ask the Wangster about line 51 in Vision.java (our IMU + type, if we're even using that, etc.)
+
+Claw:
+1. Ask about the claw in robot CAD
+
+Localization:
+1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
+2. Inform the Wangster that we will not be using Kalman filters this year.
+
+Overall Project Structure:
+1. Create a separate "testing" folder for AxonTester, EncoderOffsetTesting, etc.
+2. Create a separate folder for hardware stuff (SwerveDrivetrain, Vision, etc.)
+3. Create a separate folder for opmodes (Teleop, Auto (to be created in the future))

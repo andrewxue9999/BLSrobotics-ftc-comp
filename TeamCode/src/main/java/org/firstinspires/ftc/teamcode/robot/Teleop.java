@@ -1,23 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.robot;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
-
-import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 
 
 @TeleOp(name="2024-25 Swerve TeleOp Code", group="Linear OpMode")
-public class SwerveTeleop extends LinearOpMode {
+public class Teleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 //    public SwerveModule rightFront;
@@ -110,9 +103,6 @@ public class SwerveTeleop extends LinearOpMode {
 
             double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
-            // future: use trig (cosine) to find angle for heading
-            // for now: any amount of left/right that's above 0.05 will result in direct 90 degree rotation of servos
-            // crservos gain voltage until target reached
 
 //            rightFrontPower = Range.clip(driveY - azimuth, -1.0, 1.0);
 //            leftFrontPower = Range.clip(driveY + azimuth, -1.0, 1.0);
