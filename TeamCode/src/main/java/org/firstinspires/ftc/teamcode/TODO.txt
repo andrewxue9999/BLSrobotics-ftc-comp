@@ -10,14 +10,13 @@ Vision:
 4. ChArUco Camera Calibration?: https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration
 5. Print physical AprilTags for testing with VisionHardwareSetup.java on Tuesday ("Enable "Full 3D" in your AprilTag pipeline's "Advanced" tab in the web interface. Use the web interface to position your camera relative to the center of your robot's footprint.")
 6. Integrate Vision.java into Teleop.java once the hardware is set up
-7. Ask the Wangster about line 91 in Vision.java (our IMU + type -> BNO055?, if we're even using that, etc.)
+7. add IMU
 
 Claw:
 1. Ask about the claw in robot CAD
 
 Localization:
 1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
-2. Inform the Wangster that we will not be using Kalman filters this year.
 
 Auto:
 1. Implement basic Roadrunner thing that literally just parks, since that's all we're doing for the upcoming scrimmage apparently
