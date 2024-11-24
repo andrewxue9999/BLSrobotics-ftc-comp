@@ -20,6 +20,15 @@ public class EncoderOffsetTesting extends LinearOpMode {
     private AbsoluteAnalogEncoder efrontLeft;
     private AbsoluteAnalogEncoder ebackLeft;
     private AbsoluteAnalogEncoder ebackRight;
+
+    double newFrontRightRad;
+    double newFrontRightDeg;
+    double newFrontLeftRad;
+    double newFrontLeftDeg;
+    double newBackLeftRad;
+    double newBackLeftDeg;
+    double newBackRightRad;
+    double newBackRightDeg;
     
 
     public void runOpMode() throws InterruptedException {
@@ -45,6 +54,19 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            newFrontRightRad = ((efrontRight.getVoltage())/3.3) * 2 * Math.PI;
+            newFrontRightDeg = ((efrontRight.getVoltage())/3.3) * 360;
+
+            newFrontLeftRad = ((efrontLeft.getVoltage())/3.3) * 2 * Math.PI;
+            newFrontLeftDeg = ((efrontLeft.getVoltage())/3.3) * 360;
+
+            newBackLeftRad = ((ebackLeft.getVoltage())/3.3) * 2 * Math.PI;
+            newBackLeftDeg = ((ebackLeft.getVoltage())/3.3) * 360;
+
+            newBackRightRad = ((ebackRight.getVoltage())/3.3) * 2 * Math.PI;
+            newBackRightDeg = ((ebackRight.getVoltage())/3.3) * 360;
+
+
             double frontRightV = efrontRight.getCurrentPosition();
             double frontLeftV = efrontLeft.getCurrentPosition();
             double backLeftV = ebackLeft.getCurrentPosition();
@@ -52,6 +74,28 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
 
             telemetry.addData("You can", "start aligning the left and right wheels with a straightedge!");
+
+            telemetry.addData("newFrontRightRad", newFrontRightRad);
+            telemetry.addData("newFrontRightDeg", newFrontRightDeg);
+
+            telemetry.addData("", "" + "\n");
+
+            telemetry.addData("newFrontLeftRad", newFrontLeftRad);
+            telemetry.addData("newFrontLeftDeg", newFrontLeftDeg);
+
+            telemetry.addData("", "" + "\n");
+
+            telemetry.addData("newBackLeftRad", newBackLeftRad);
+            telemetry.addData("newBackLeftDeg", newBackLeftDeg);
+
+            telemetry.addData("", "" + "\n");
+
+            telemetry.addData("newBackRightRad", newBackRightRad);
+            telemetry.addData("newBackRightDeg", newBackRightDeg);
+
+            telemetry.addData("", "" + "\n\n");
+
+
 
             telemetry.addData("frontRight", frontRightV + "rad");
             telemetry.addData("frontLeft", frontLeftV + "rad");

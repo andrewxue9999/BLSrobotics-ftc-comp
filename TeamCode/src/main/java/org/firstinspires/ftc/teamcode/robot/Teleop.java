@@ -40,46 +40,6 @@ public class Teleop extends LinearOpMode {
 
         drivetrain.init();
 
-//        //motors stuff
-//        mrightFront  = hardwareMap.get(DcMotorEx.class, "frontRight");
-//        mleftFront  = hardwareMap.get(DcMotorEx.class, "frontLeft");
-//        mleftBack  = hardwareMap.get(DcMotorEx.class, "backLeft");
-//        mrightBack = hardwareMap.get(DcMotorEx.class, "backRight");
-//
-//        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-//        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
-//        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-//        mrightFront.setDirection(DcMotor.Direction.FORWARD);
-//        mleftFront.setDirection(DcMotor.Direction.REVERSE);
-//        mleftBack.setDirection(DcMotor.Direction.REVERSE);
-//        mrightBack.setDirection(DcMotor.Direction.FORWARD);
-//
-//        //servos stuff
-//        srightFront = hardwareMap.get(CRServo.class, "sfrontRight");
-//        sleftFront = hardwareMap.get(CRServo.class, "sfrontLeft");
-//        sleftBack = hardwareMap.get(CRServo.class, "sbackLeft");
-//        srightBack = hardwareMap.get(CRServo.class, "sbackRight");
-//
-////        PIDFController.PIDCoefficients scoefRightFront = new PIDFController.PIDCoefficients(1.0, 1.0,1.0);
-//
-//        //encoders stuff
-//        erightFront =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontRight"), 3.3);
-//        eleftFront =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontLeft"), 3.3);
-//        eleftBack =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackLeft"), 3.3);
-//        erightBack=  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackRight"), 3.3);
-//
-//        erightFront.zero(E_FRONT_RIGHT_OFFSET);
-//        eleftFront.zero(E_FRONT_LEFT_OFFSET);
-//        eleftBack.zero(E_BACK_LEFT_OFFSET);
-//        erightBack.zero(E_BACK_RIGHT_OFFSET);
-//
-//
-//        //actual module stuff
-//        rightFront = new SwerveModule(mrightFront, srightFront, erightFront);
-//        leftFront = new SwerveModule(mleftFront, sleftFront, eleftFront);
-//        leftBack = new SwerveModule(mleftBack, sleftBack, eleftBack);
-//        rightBack = new SwerveModule(mrightBack, srightBack, erightBack);
-        //swerveModules = new SwerveModule[]{rightFront, leftFront, leftBack, rightBack};
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -103,16 +63,6 @@ public class Teleop extends LinearOpMode {
 
             double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
-
-//            rightFrontPower = Range.clip(driveY - azimuth, -1.0, 1.0);
-//            leftFrontPower = Range.clip(driveY + azimuth, -1.0, 1.0);
-//            leftBackPower = Range.clip(driveY + azimuth, -1.0, 1.0);
-//            rightBackPower = Range.clip(driveY - azimuth, -1.0, 1.0);
-
-//            mrightFront.setPower(rightFrontPower);
-//            mleftFront.setPower(leftFrontPower);
-//            mleftBack.setPower(leftBackPower);
-//            mrightBack.setPower(rightBackPower
 
             drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.read();
