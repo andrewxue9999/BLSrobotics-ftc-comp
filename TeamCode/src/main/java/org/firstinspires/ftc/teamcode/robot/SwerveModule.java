@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -23,7 +25,7 @@ public class SwerveModule {
     private DcMotorEx motor;
     private CRServo servo;
     private AbsoluteAnalogEncoder encoder;
-    private PIDFController scontroller;
+    private PIDController scontroller;
     private final double WHEEL_RAD = 2.67717; //inches might change irl due to wheel squish
     private final double DRIVE_RATIO = (52 * 2 * 2) / 18.0; //208/18
     private final double AZIMUTH_RATIO = 1.0; //for now
@@ -34,16 +36,17 @@ public class SwerveModule {
     private final double DEADBAND = .03;
 
     public boolean wheelFlipped = false;
-    private double position = .0;
-    private double target = .0 + OFFSET;
+    private double position;
+    private double target;
 
     public double lastMotorPower = 0; // IGNORE BUT DO NOT REMOVE
 
     public SwerveModule(DcMotorEx m, CRServo s, AbsoluteAnalogEncoder e) { //, double r) { //, double sp, double si, double sd) {
         motor = m;
-        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         servo = s;
         //((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000)); // change these numbers later??
@@ -51,22 +54,20 @@ public class SwerveModule {
 
         encoder = e;
 
-        scontroller = new PIDFController(P, I, D, 0);
+        scontroller = new PIDController(P, I, D);
+        scontroller.setPID(P, I, D);
 
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
     public void read() {
-        position = encoder.getCurrentPosition() + OFFSET;
+        position = encoder.getCurrentPosition() ;
     }
 
     double error = 0;
 
     public void update() {
-        scontroller.setPIDF(P, I, D, 0);
+
         double targetPos = getTargetRotation();
         double currentPos = getModuleRotation();
         error = (targetPos - currentPos);
@@ -88,7 +89,7 @@ public class SwerveModule {
     }
 
     private double getModuleRotation() {
-        return normalizeRadians(position);
+        return (position); // used to have normalizeRadians()
     }
 
     private double getTargetRotation() {
@@ -102,7 +103,7 @@ public class SwerveModule {
     }
 
     public void setTargetRotation(double target) {
-        this.target = normalizeRadians(target) + OFFSET;   // TODO REMOVE OFFSET WHEN THIS IT WORKS. Offset all targets by const OFFSET
+        this.target = (target); // used to have normalizeRadians()
     }
 
     public double getWheelPosition() {

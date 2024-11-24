@@ -110,7 +110,7 @@ public class SwerveDrivetrain {
                 d = y + head * (TRACKWIDTH / R);
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
-        wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)};
+        wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
 
         max = wheelSpeeds[0];
         for (double currentNum : wheelSpeeds) { // get max of wheelSpeeds
