@@ -60,14 +60,10 @@ public class SwerveDrivetrain {
         HardwareMap hardwareMap = myOpMode.hardwareMap;
         Telemetry telemetry = myOpMode.telemetry;
 
-
         mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
         mrightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
         mrightBack = hardwareMap.get(DcMotorEx.class, "backRight");
-
-
-
 
 
         sleftFront = hardwareMap.get(CRServo.class, "sfrontLeft");
@@ -84,10 +80,10 @@ public class SwerveDrivetrain {
         aaeRightFront.zero(E_FRONT_RIGHT_OFFSET);
 
 
-        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET).setInverted(true));
-        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET).setInverted(true));
+        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET)); // removed .setInverted(true)
+        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET));
         rightFront = new SwerveModule(mrightFront, srightFront, aaeRightFront);
-        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET).setInverted(true));
+        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 
