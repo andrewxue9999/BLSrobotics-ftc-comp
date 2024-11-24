@@ -10,7 +10,7 @@ Vision:
 4. ChArUco Camera Calibration?: https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration
 5. Print physical AprilTags for testing with VisionHardwareSetup.java on Tuesday ("Enable "Full 3D" in your AprilTag pipeline's "Advanced" tab in the web interface. Use the web interface to position your camera relative to the center of your robot's footprint.")
 6. Integrate Vision.java into Teleop.java once the hardware is set up
-7. Ask the Wangster about line 51 in Vision.java (our IMU + type -> BNO055?, if we're even using that, etc.)
+7. Ask the Wangster about line 91 in Vision.java (our IMU + type -> BNO055?, if we're even using that, etc.)
 
 Claw:
 1. Ask about the claw in robot CAD

@@ -87,7 +87,7 @@ public class SwerveDrivetrain {
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 
-        myOpMode.telemetry.addData(">", "hardware initialized!");
+        myOpMode.telemetry.addData(">", "hardware initialized :D");
         telemetry.update();
 
 

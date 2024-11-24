@@ -97,7 +97,7 @@ public class SwerveModule {
 
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
-        lastMotorPower = power;
+//        lastMotorPower = power;
         motor.setPower(power);
     }
 

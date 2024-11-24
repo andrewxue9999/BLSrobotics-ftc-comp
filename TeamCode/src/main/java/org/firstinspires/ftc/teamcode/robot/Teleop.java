@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
-
+import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 
 @TeleOp(name="2024-25 Swerve TeleOp Code", group="Linear OpMode")
 public class Teleop extends LinearOpMode {
@@ -29,18 +31,24 @@ public class Teleop extends LinearOpMode {
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     private double voltage = 1;
     private PIDFController scontroller = new PIDFController(1.0, 0, 1.0, 0);
+    private SlewRateLimiter fw;
+    private SlewRateLimiter str;
+    public static double fw_r = 4;
+    public static double str_r = 4;
     public SwerveDrivetrain drivetrain;
+
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        drivetrain = new SwerveDrivetrain(this);
 
+        drivetrain = new SwerveDrivetrain(this);
         drivetrain.init();
 
-
+        fw = new SlewRateLimiter(fw_r);
+        str = new SlewRateLimiter(str_r);
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
@@ -64,8 +72,13 @@ public class Teleop extends LinearOpMode {
             double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
 
-            drivetrain.set(new Pose(driveY, driveX, azimuth));
+//            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.read();
+            Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
+            drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
+
+            drivetrain.set(new Pose(driveY, driveX, azimuth));
+
             drivetrain.write();
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;
