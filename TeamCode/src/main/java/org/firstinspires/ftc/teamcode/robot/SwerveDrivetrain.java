@@ -115,6 +115,11 @@ public class SwerveDrivetrain {
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
         wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)};
+
+        max = wheelSpeeds[0];
+        for (double currentNum : wheelSpeeds) { // get max of wheelSpeeds
+            if (currentNum > max) max = currentNum;
+        }
     }
 
 
@@ -123,7 +128,7 @@ public class SwerveDrivetrain {
         for (int i = 0; i < 4; i++) {
             SwerveModule m = swerveModules[i];
 
-            if (Math.abs(max) > 1) wheelSpeeds[i] /= max;
+            if (Math.abs(max) > 1) wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
 

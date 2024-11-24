@@ -10,6 +10,8 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
+import java.util.Locale;
+
 @Config // config lets us access and edit through FTC Dashboard in real time without rebuilding every time
 public class SwerveModule {
     // drive gears, steering gears, drive motor, azimuth motor, absolute encoder
@@ -55,7 +57,6 @@ public class SwerveModule {
 
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
     }
 
     public void read() {
@@ -78,10 +79,11 @@ public class SwerveModule {
 
         double power = Range.clip(scontroller.calculate(currentPos, targetPos), -1, 1);
         if (Double.isNaN(power)) power = 0; // set 0 if null calculation
-        if (error <= DEADBAND) {
+        if (Math.abs(error) <= DEADBAND) {
             power = 0;
         }
         servo.setPower(power);
+        //         servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
 
     }
 
@@ -116,7 +118,7 @@ public class SwerveModule {
     }
 
     public String getTelemetry(String name) {
-        return String.format("%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), lastMotorPower, error);
+        return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), lastMotorPower, error);
     }
 //
 //    public void azimtuh(double pos) { //in RADianz
