@@ -35,10 +35,10 @@ public class SwerveDrivetrain {
     private static double analogRangeRightBack = 3.3;
 
 
-    public static final double E_FRONT_RIGHT_OFFSET = 5.858;//myArbitraryRadValue
-    public static final double E_FRONT_LEFT_OFFSET = 2.042;//myArbitraryRadValue
-    public static final double E_BACK_LEFT_OFFSET = 1.396;//myArbitraryRadValue
-    public static final double E_BACK_RIGHT_OFFSET = 5.440;//myArbitraryRadValue
+    public static final double E_FRONT_RIGHT_OFFSET = 2.67;//myArbitraryRadValue
+    public static final double E_FRONT_LEFT_OFFSET = 5.20;//myArbitraryRadValue
+    public static final double E_BACK_LEFT_OFFSET = 4.54;//myArbitraryRadValue
+    public static final double E_BACK_RIGHT_OFFSET = 2.32;//myArbitraryRadValue
 
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
@@ -116,7 +116,10 @@ public class SwerveDrivetrain {
             if (Math.abs(max) > 1) wheelSpeeds[i] /= max;
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
+
+            m.update();
         }
+
     }
 
     public String getTelemetry() {

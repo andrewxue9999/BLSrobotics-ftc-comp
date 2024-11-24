@@ -115,6 +115,7 @@ public class Teleop extends LinearOpMode {
 //            mrightBack.setPower(rightBackPower
 
             drivetrain.set(new Pose(driveY, driveX, azimuth));
+            drivetrain.read();
             drivetrain.write();
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;
