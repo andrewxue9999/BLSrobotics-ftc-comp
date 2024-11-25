@@ -44,7 +44,6 @@ public class SwerveDrivetrain {
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH/2, WHEELBASE/2);
-    public static double leftFrontOffset = 0, leftBackOffset = 0, rightFrontOffset = 0, rightBackOffset = 0;
     double[] wheelSpeeds;
     double[] wheelAngles;
     double max = 1.1;
@@ -78,6 +77,7 @@ public class SwerveDrivetrain {
 
         aaeRightFront = new AbsoluteAnalogEncoder(erightFront, analogRangeRightFront);
         aaeRightFront.zero(E_FRONT_RIGHT_OFFSET);
+
 
 
         leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET)); // removed .setInverted(true)

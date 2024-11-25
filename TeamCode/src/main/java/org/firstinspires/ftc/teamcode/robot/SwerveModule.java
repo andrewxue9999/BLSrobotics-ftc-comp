@@ -17,10 +17,9 @@ import java.util.Locale;
 @Config // config lets us access and edit through FTC Dashboard in real time without rebuilding every time
 public class SwerveModule {
     // drive gears, steering gears, drive motor, azimuth motor, absolute encoder
-    public static double P = 0.31;//0.04;
+    public static double P = 0.2;//0.04;
     public static double I = 0.0;
     public static double D = 0.0;
-    public static double K_STATIC = 0.0;
 
     private DcMotorEx motor;
     private CRServo servo;
@@ -55,6 +54,7 @@ public class SwerveModule {
         encoder = e;
 
         scontroller = new PIDController(P, I, D);
+
         scontroller.setPID(P, I, D);
 
 
