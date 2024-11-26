@@ -36,17 +36,18 @@ public class SwerveDrivetrain {
     private static double analogRangeRightBack = 3.3;
 
 
-    public static final double E_FRONT_RIGHT_OFFSET = 2.0449; // RADianz
-    public static final double E_FRONT_LEFT_OFFSET = 1.14424;
+    public static final double E_FRONT_RIGHT_OFFSET = 1.487; //2.0449; // RADianz
+    public static final double E_FRONT_LEFT_OFFSET = 1.487; //1.14424;
     public static final double E_BACK_LEFT_OFFSET = 1.487;
-    public static final double E_BACK_RIGHT_OFFSET = 3.9565;
+    public static final double E_BACK_RIGHT_OFFSET = 1.487; //3.9565;
 
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH/2, WHEELBASE/2);
-    double[] wheelSpeeds;
-    double[] wheelAngles;
+    double[] wheelSpeeds = new double[4];
+    double[] wheelAngles = new double[4];
     double max = 1.1;
+    public static boolean maintainHeading = false;
 
     private LinearOpMode myOpMode;
 
@@ -110,7 +111,7 @@ public class SwerveDrivetrain {
                 d = y + head * (TRACKWIDTH / R);
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
-        wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
+        if (!maintainHeading) wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
 
         max = wheelSpeeds[0];
         for (double currentNum : wheelSpeeds) { // get max of wheelSpeeds

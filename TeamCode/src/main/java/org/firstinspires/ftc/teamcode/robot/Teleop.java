@@ -21,10 +21,6 @@ public class Teleop extends LinearOpMode {
 //    public SwerveModule rightBack;
     public SwerveModule[] swerveModules;
 
-    public static final double E_FRONT_RIGHT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_FRONT_LEFT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_BACK_LEFT_OFFSET = 1.1;//myArbitraryRadValue
-    public static final double E_BACK_RIGHT_OFFSET = 1.1;//myArbitraryRadValue
 
     public final double TRACKWIDTH = 12.6378;
     public final double WHEELBASE = 12.6378;
@@ -63,9 +59,7 @@ public class Teleop extends LinearOpMode {
             double rightBackPower;
 
 
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
+            // left stick to go forward, and right stick to turn.
             double driveY = -gamepad1.left_stick_y;
             double driveX = gamepad1.left_stick_x;
 
@@ -74,11 +68,14 @@ public class Teleop extends LinearOpMode {
 
 //            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.read();
+
+            drivetrain.maintainHeading = Math.abs(driveY) < 0.002 && Math.abs(driveX) < 0.002 && Math.abs(azimuth) < 0.002;
+
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
-            drivetrain.set(new Pose(driveY, driveX, azimuth));
-
+//            drivetrain.set(new Pose(driveY, driveX, azimuth));
+            drivetrain.set(drive);
             drivetrain.write();
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;
