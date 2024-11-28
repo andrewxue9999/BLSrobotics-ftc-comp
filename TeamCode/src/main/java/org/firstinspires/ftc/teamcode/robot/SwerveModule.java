@@ -89,7 +89,7 @@ public class SwerveModule {
     }
 
     private double getModuleRotation() {
-        return (position); // used to have normalizeRadians()
+        return normalizeRadians(position); // used to have normalizeRadians()
     }
 
     private double getTargetRotation() {
@@ -103,7 +103,7 @@ public class SwerveModule {
     }
 
     public void setTargetRotation(double target) {
-        this.target = (target); // used to have normalizeRadians()
+        this.target = normalizeRadians(target); // used to have normalizeRadians()
     }
 
     public double getWheelPosition() {
