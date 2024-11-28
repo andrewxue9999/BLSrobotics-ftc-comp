@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -48,18 +51,9 @@ public class SwerveDrivetrain {
     double[] wheelSpeeds = new double[4];
     double[] wheelAngles = new double[4];
     double max = 1.1;
-    public static boolean maintainHeading = false;
+    public boolean maintainHeading = false;
 
-    private LinearOpMode myOpMode;
-
-    public SwerveDrivetrain(LinearOpMode opmode) {
-        myOpMode = opmode;
-    }
-
-    public void init() {
-
-        HardwareMap hardwareMap = myOpMode.hardwareMap;
-        Telemetry telemetry = myOpMode.telemetry;
+    public void init(@NonNull HardwareMap hardwareMap) {
 
         mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
         mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -68,6 +62,11 @@ public class SwerveDrivetrain {
 
         mleftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         mleftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        mleftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mleftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mrightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mrightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         sleftFront = hardwareMap.get(CRServo.class, "sfrontLeft");
         sleftBack = hardwareMap.get(CRServo.class, "sbackLeft");
@@ -83,19 +82,15 @@ public class SwerveDrivetrain {
         aaeRightFront.zero(E_FRONT_RIGHT_OFFSET);
 
 
-
         leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET)); // removed .setInverted(true)
         leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET));
         rightFront = new SwerveModule(mrightFront, srightFront, aaeRightFront);
         rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
-
-        myOpMode.telemetry.addData(">", "hardware initialized :D");
-        telemetry.update();
-
-
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
     }
 
     public void read() {

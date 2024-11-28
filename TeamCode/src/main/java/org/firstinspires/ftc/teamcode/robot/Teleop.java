@@ -15,24 +15,14 @@ import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 public class Teleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-//    public SwerveModule rightFront;
-//    public SwerveModule leftFront;
-//    public SwerveModule leftBack;
-//    public SwerveModule rightBack;
-    public SwerveModule[] swerveModules;
-
-
     public final double TRACKWIDTH = 12.6378;
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
-    private double voltage = 1;
-    private PIDFController scontroller = new PIDFController(1.0, 0, 1.0, 0);
-    private SlewRateLimiter fw;
+private SlewRateLimiter fw;
     private SlewRateLimiter str;
-    public static double fw_r = 1;
-    public static double str_r = 1;
+    public static double fw_r = 8;
+    public static double str_r = 8;
     public SwerveDrivetrain drivetrain;
-
 
 
     @Override
@@ -40,8 +30,8 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        drivetrain = new SwerveDrivetrain(this);
-        drivetrain.init();
+        drivetrain = new SwerveDrivetrain();
+        drivetrain.init(hardwareMap);
 
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
@@ -52,21 +42,12 @@ public class Teleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double rightFrontPower;
-            double leftFrontPower;
-            double leftBackPower;
-            double rightBackPower;
-
-
             // left stick to go forward, and right stick to turn.
-            double driveY = -gamepad1.left_stick_y;
-            double driveX = gamepad1.left_stick_x;
+            double driveY = gamepad1.left_stick_y;
+            double driveX = -gamepad1.left_stick_x;
 
             double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
-
-//            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.read();
 
             drivetrain.maintainHeading = Math.abs(driveY) < 0.002 && Math.abs(driveX) < 0.002 && Math.abs(azimuth) < 0.002;
@@ -85,7 +66,7 @@ public class Teleop extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
-                telemetry.addData("Drivetrainz", drivetrain.getTelemetry());
+                telemetry.addData("Drivetrains", drivetrain.getTelemetry());
 //            telemetry.addData("Motors", "left front (%.2f), left back (%.2f), right front (%.2f), right back", leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             telemetry.update();
         }

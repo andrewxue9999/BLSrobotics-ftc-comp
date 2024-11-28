@@ -20,6 +20,7 @@ public class SwerveModule {
     public static double P = 0.2;//0.04;
     public static double I = 0.0;
     public static double D = 0.0;
+    public static double K_STATIC = 0.03;
 
     private DcMotorEx motor;
     private CRServo servo;
@@ -39,6 +40,7 @@ public class SwerveModule {
     private double target;
 
     public double lastMotorPower = 0; // IGNORE BUT DO NOT REMOVE
+    private double error;
 
     public SwerveModule(DcMotorEx m, CRServo s, AbsoluteAnalogEncoder e) { //, double r) { //, double sp, double si, double sd) {
         motor = m;
@@ -46,50 +48,51 @@ public class SwerveModule {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         servo = s;
         //((CRServoImplEx) servo).setPwmRange(new PwmControl.PwmRange(500, 2500, 5000)); // change these numbers later??
-
 
         encoder = e;
 
         scontroller = new PIDController(P, I, D);
 
         scontroller.setPID(P, I, D);
-
-
     }
 
     public void read() {
         position = encoder.getCurrentPosition() ;
     }
 
-    double error = 0;
 
     public void update() {
-
-        double targetPos = getTargetRotation();
+        scontroller.setPID(P, I, D);
+        double target = getTargetRotation();
         double currentPos = getModuleRotation();
-        error = (targetPos - currentPos);
+        error = normalizeRadians(target - currentPos);
 
-//        if (Math.abs(error) > Math.PI / 2) {
-//            target = normalizeRadians(targetPos - Math.PI);
-//            error = normalizeRadians(target - currentPos);
-//            wheelFlipped = true;
-//        } // reverse direction
+        if (Math.abs(error) > Math.PI / 2) {
+            target = normalizeRadians(target - Math.PI);
+            wheelFlipped = true;
+        } // reverse direction ^
+        else {
+            wheelFlipped = false;
+        }
 
-        double power = Range.clip(scontroller.calculate(currentPos, targetPos), -1, 1);
+        error = normalizeRadians(target - currentPos);
+
+        double power = Range.clip(scontroller.calculate(0, error), -1, 1);
         if (Double.isNaN(power)) power = 0; // set 0 if null calculation
         if (Math.abs(error) <= DEADBAND) {
-            power = 0;
+            power += 0;
+        }
+        else {
+            power += K_STATIC * Math.signum(power);
         }
         servo.setPower(power);
         //         servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
-
     }
 
     private double getModuleRotation() {
-        return normalizeRadians(position); // used to have normalizeRadians()
+        return normalizeRadians(position);
     }
 
     private double getTargetRotation() {
@@ -98,12 +101,11 @@ public class SwerveModule {
 
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
-//        lastMotorPower = power;
         motor.setPower(power);
     }
 
     public void setTargetRotation(double target) {
-        this.target = normalizeRadians(target); // used to have normalizeRadians()
+        this.target = normalizeRadians(target);
     }
 
     public double getWheelPosition() {
@@ -121,22 +123,4 @@ public class SwerveModule {
     public String getTelemetry(String name) {
         return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), lastMotorPower, error);
     }
-//
-//    public void azimtuh(double pos) { //in RADianz
-//        scontroller.setSetPoint(pos);
-//
-//        while (!scontroller.atSetPoint()) {
-//            double output = scontroller.calculate(
-//                    encoder.getCurrentPosition(), pos  // the measured value and the setpoint
-//            );
-//
-//            servo.setPower(output);
-//        }
-//
-//    }
-
-//    public void drive (double pos, double x, double y) {
-//
-//    }
-
 }
