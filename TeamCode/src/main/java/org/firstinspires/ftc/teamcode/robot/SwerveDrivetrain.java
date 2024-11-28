@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,10 +37,10 @@ public class SwerveDrivetrain {
     private static double analogRangeRightBack = 3.3;
 
 
-    public static final double E_FRONT_RIGHT_OFFSET = 1.487; //2.0449; // RADianz
-    public static final double E_FRONT_LEFT_OFFSET = 1.487; //1.14424;
-    public static final double E_BACK_LEFT_OFFSET = 1.487;
-    public static final double E_BACK_RIGHT_OFFSET = 1.487; //3.9565;
+    public static final double E_FRONT_RIGHT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
+    public static final double E_FRONT_LEFT_OFFSET = -Math.PI/2 + 5.1198; //1.14424;
+    public static final double E_BACK_LEFT_OFFSET = -Math.PI/2 + 4.8342; // 1.487;
+    public static final double E_BACK_RIGHT_OFFSET = -Math.PI/2 + 5.3826; //3.9565;
 
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
@@ -65,6 +66,8 @@ public class SwerveDrivetrain {
         mrightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
         mrightBack = hardwareMap.get(DcMotorEx.class, "backRight");
 
+        mleftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        mleftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         sleftFront = hardwareMap.get(CRServo.class, "sfrontLeft");
         sleftBack = hardwareMap.get(CRServo.class, "sbackLeft");

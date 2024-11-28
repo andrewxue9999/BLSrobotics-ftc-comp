@@ -29,8 +29,8 @@ public class Teleop extends LinearOpMode {
     private PIDFController scontroller = new PIDFController(1.0, 0, 1.0, 0);
     private SlewRateLimiter fw;
     private SlewRateLimiter str;
-    public static double fw_r = 4;
-    public static double str_r = 4;
+    public static double fw_r = 1;
+    public static double str_r = 1;
     public SwerveDrivetrain drivetrain;
 
 
