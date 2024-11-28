@@ -1,8 +1,7 @@
 Drivetrain:
-1. Clean up SwerveDrivetrain constructor Linear Opmode inefficiencies (including when it is instantiated in Teleop.java)
-2. #1 can be accomplished by having hardwareMap as an argument in the constructor or init(), and changing the telemetry method to just a methods that returns strings that can be called in Teleop.java
-3. Fix turning for the swerve code
-4. Fix azimuth--correct directions for individual motors
+1. Fix azimuth--correct directions for individual motors
+2. Make swerve drive field centric
+3. Ask Kyle about swerve input lag
 
 Vision:
 1. Set Up Limelight on Control Hub: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/setup
@@ -13,16 +12,9 @@ Vision:
 6. Integrate Vision.java into Teleop.java once the hardware is set up
 7. add IMU
 
-Claw:
-1. Ask about the claw in robot CAD
-
 Localization:
 1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
 
 Auto:
 1. Implement basic Roadrunner thing that literally just parks, since that's all we're doing for the upcoming scrimmage apparently
 
-Overall Project Structure:
-1. Create a separate "testing" folder for AxonTester, EncoderOffsetTesting, etc.
-2. Create a separate folder for hardware stuff (SwerveDrivetrain, Vision, etc.)
-3. Create a separate folder for opmodes (Teleop, Auto (to be created in the future))

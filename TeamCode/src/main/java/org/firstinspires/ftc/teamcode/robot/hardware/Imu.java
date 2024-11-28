@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.qualcomm.robotcore.hardware.IMU;
 
-public class imu {
+public class Imu {
 
     public IMU imu;
     private Thread imuThread;

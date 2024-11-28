@@ -4,8 +4,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.TankDrive;
+import org.firstinspires.ftc.teamcode.robot.hardware.OLD.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.hardware.OLD.TankDrive;
 import org.firstinspires.ftc.teamcode.util.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.util.TwoDeadWheelLocalizer;
 
