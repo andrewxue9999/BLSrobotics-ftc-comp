@@ -9,4 +9,11 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
 public class Pivot {
+  private DcMotor pivot; 
+  public void init(@NonNull HardwareMap hardwareMap, String name) {
+       pivot = hardwareMap.get(DcMotor.class, name);
+  }
+  public String getTelemetry(String name) {
+      return String.format("Open %S", name);
+  }
 }
