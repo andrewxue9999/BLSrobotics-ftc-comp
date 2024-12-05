@@ -8,8 +8,13 @@
 
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
+import androidx.annotation.NonNull;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public class Pivot {
-  private DcMotor pivot; 
+  private DcMotor pivot;
   public void init(@NonNull HardwareMap hardwareMap, String name) {
        pivot = hardwareMap.get(DcMotor.class, name);
   }

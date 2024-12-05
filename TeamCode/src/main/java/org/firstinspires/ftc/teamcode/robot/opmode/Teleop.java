@@ -19,11 +19,12 @@ public class Teleop extends LinearOpMode {
     public final double TRACKWIDTH = 12.6378;
     public final double WHEELBASE = 12.6378;
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
-private SlewRateLimiter fw;
+    private SlewRateLimiter fw;
     private SlewRateLimiter str;
     public static double fw_r = 8;
     public static double str_r = 8;
     public SwerveDrivetrain drivetrain;
+    public boolean isRight;
 
 
     @Override
@@ -56,8 +57,14 @@ private SlewRateLimiter fw;
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
+            if (drive.heading > 0) {
+                isRight = true;
+            }
+            else if (drive.heading < 0) {
+                isRight = false;
+            }
 //            drivetrain.set(new Pose(driveY, driveX, azimuth));
-            drivetrain.set(drive);
+            drivetrain.set(drive, isRight);
             drivetrain.write();
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;

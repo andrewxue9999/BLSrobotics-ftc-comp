@@ -50,6 +50,7 @@ public class SwerveDrivetrain {
     double[] wheelAngles = new double[4];
     double max = 1.1;
     public boolean maintainHeading = false;
+    private double HEADING_DEADZONE = 0.05;
 
     public void init(@NonNull HardwareMap hardwareMap) {
 
@@ -95,7 +96,7 @@ public class SwerveDrivetrain {
     }
 
 //    @Override
-    public void set(Pose pose) {
+    public void set(Pose pose, boolean isRight) {
         double x = pose.x;
         double y = pose.y;
         double head = pose.heading;
@@ -106,7 +107,23 @@ public class SwerveDrivetrain {
                 d = y + head * (TRACKWIDTH / R);
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
-        if (!maintainHeading) wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
+        if (!maintainHeading) {
+            wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
+
+            if (head >= HEADING_DEADZONE) {
+                wheelAngles[0] *= -1;
+                wheelAngles[1] *= -1;
+
+                if (isRight) {
+                    wheelSpeeds[0] *= -1; // change these indices later
+                    wheelSpeeds[2] *= -1;
+                }
+                else {
+                    wheelSpeeds[1] *= -1;
+                    wheelSpeeds[3] *= -1;
+                }
+            }
+        }
 
         max = wheelSpeeds[0];
         for (double currentNum : wheelSpeeds) { // get max of wheelSpeeds

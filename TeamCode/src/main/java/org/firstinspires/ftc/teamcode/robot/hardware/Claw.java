@@ -13,6 +13,7 @@ public class Claw {
     private Servo clawServo;
     private boolean isOpen = false;
     private double lastTime = 0;
+    private final double TIME_DELAY = 0.15;
 
     public void init(@NonNull HardwareMap hardwareMap, String name) {
         clawServo = hardwareMap.get(Servo.class, name);
@@ -20,7 +21,7 @@ public class Claw {
     }
 
     public void toggle(ElapsedTime time) {
-        if (time.time() > lastTime + 0.15) { // add time delay of 0.15 seconds
+        if (time.time() > lastTime + TIME_DELAY) {
             if (isOpen) {
                 clawServo.setPosition(0.0);
                 isOpen = false;
