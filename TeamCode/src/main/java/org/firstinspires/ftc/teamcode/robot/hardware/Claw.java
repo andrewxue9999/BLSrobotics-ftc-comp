@@ -2,11 +2,45 @@
 
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
+import androidx.annotation.NonNull;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class Claw {
-  public static controlClaw(boolean input) {
-    if (input){
-      
+
+    private Servo clawServo;
+    private boolean isOpen = false;
+    private double lastTime = 0;
+
+    public void init(@NonNull HardwareMap hardwareMap, String name) {
+        clawServo = hardwareMap.get(Servo.class, name);
+
     }
-  }
+
+    public void toggle(ElapsedTime time) {
+        if (time.time() > lastTime + 0.15) { // add time delay of 0.15 seconds
+            if (isOpen) {
+                clawServo.setPosition(0.0);
+                isOpen = false;
+            }
+            else {
+                clawServo.setPosition(1.0);
+                isOpen = true;
+            }
+        }
+
+        lastTime = time.time();
+    }
+
+    public boolean getState() {
+        return isOpen;
+    }
+
+    public String getTelemetry() {
+        return String.format("Open %B", isOpen);
+    }
+
 }
 

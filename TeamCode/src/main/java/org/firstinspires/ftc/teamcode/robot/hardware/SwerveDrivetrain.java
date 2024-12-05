@@ -88,7 +88,6 @@ public class SwerveDrivetrain {
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
     }
 
     public void read() {
