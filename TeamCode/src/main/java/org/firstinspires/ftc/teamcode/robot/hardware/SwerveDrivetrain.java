@@ -96,7 +96,7 @@ public class SwerveDrivetrain {
     }
 
 //    @Override
-    public void set(Pose pose, boolean isRight) {
+    public void set(Pose pose) {
         double x = pose.x;
         double y = pose.y;
         double head = pose.heading;
@@ -109,20 +109,6 @@ public class SwerveDrivetrain {
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
         if (!maintainHeading) {
             wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
-
-            if (head >= HEADING_DEADZONE) {
-                wheelAngles[0] *= -1;
-                wheelAngles[1] *= -1;
-
-                if (isRight) {
-                    wheelSpeeds[0] *= -1; // change these indices later
-                    wheelSpeeds[2] *= -1;
-                }
-                else {
-                    wheelSpeeds[1] *= -1;
-                    wheelSpeeds[3] *= -1;
-                }
-            }
         }
 
         max = wheelSpeeds[0];
@@ -132,7 +118,8 @@ public class SwerveDrivetrain {
     }
 
 
-    public void write() {
+    public void write(double head, boolean isRight) {
+
 
         for (int i = 0; i < 4; i++) {
             SwerveModule m = swerveModules[i];
@@ -140,6 +127,17 @@ public class SwerveDrivetrain {
             if (Math.abs(max) > 1) wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
+
+//            if (head >= HEADING_DEADZONE) {
+//
+//                if (i == 0 || i == 1) {
+//                        m.setInverted(true);
+//                }
+//            }
+//            else {
+//                // very inefficient code but need to debug rn
+//                m.setInverted(false);
+//            }
 
             m.update();
         }

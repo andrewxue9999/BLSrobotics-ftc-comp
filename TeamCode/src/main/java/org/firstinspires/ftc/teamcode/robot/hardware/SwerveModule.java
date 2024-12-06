@@ -90,6 +90,10 @@ public class SwerveModule {
         //         servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
     }
 
+    public void setInverted(boolean invert) {
+        encoder.setInverted(invert);
+    }
+
     private double getModuleRotation() {
         return normalizeRadians(position);
     }

@@ -57,15 +57,15 @@ public class Teleop extends LinearOpMode {
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
-            if (drive.heading > 0) {
+            if (azimuth > 0) {
                 isRight = true;
             }
-            else if (drive.heading < 0) {
+            else if (azimuth < 0) {
                 isRight = false;
             }
 //            drivetrain.set(new Pose(driveY, driveX, azimuth));
-            drivetrain.set(drive, isRight);
-            drivetrain.write();
+            drivetrain.set(drive);
+            drivetrain.write(drive.heading, isRight);
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;
 ////            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
