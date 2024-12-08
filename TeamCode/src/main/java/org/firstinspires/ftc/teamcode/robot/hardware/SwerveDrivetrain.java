@@ -96,7 +96,7 @@ public class SwerveDrivetrain {
     }
 
 //    @Override
-    public void set(Pose pose) {
+    public void set(Pose pose) { // note 1/2 for Kyle and Josh: for rotating with the swerve, I've already tried making it so that if pose.head > 0.--, reverse specific wheel angles and/or speeds in the set and write methods. did not work.
         double x = pose.x;
         double y = pose.y;
         double head = pose.heading;
@@ -118,7 +118,7 @@ public class SwerveDrivetrain {
     }
 
 
-    public void write(double head, boolean isRight) {
+    public void write(double head, boolean isRight) { // note 2/2 for Kyle and Josh: I made a method called .setInverted() that would invert the encoder if heading > 0.--. Did not work.
 
 
         for (int i = 0; i < 4; i++) {
