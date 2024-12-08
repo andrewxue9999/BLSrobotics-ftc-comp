@@ -31,14 +31,13 @@ public class SwerveDrivetrain {
     private AnalogInput eleftFront;
     private AnalogInput eleftBack;
     private AnalogInput erightBack;
-    private AbsoluteAnalogEncoder aaeRightFront;
     private static double analogRange = 3.3;
 
 
-    public static final double E_FRONT_RIGHT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
-    public static final double E_FRONT_LEFT_OFFSET = -Math.PI/2 + 5.1198; //1.14424;
-    public static final double E_BACK_LEFT_OFFSET = -Math.PI/2 + 4.8342; // 1.487;
-    public static final double E_BACK_RIGHT_OFFSET = -Math.PI/2 + 5.3826; //3.9565;
+    public static final double E_RIGHT_FRONT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
+    public static final double E_LEFT_FRONT_OFFSET = -Math.PI/2 + 5.1198; //1.14424;
+    public static final double E_LEFT_BACK_OFFSET = -Math.PI/2 + 4.8342; // 1.487;
+    public static final double E_RIGHT_BACK_OFFSET = -Math.PI/2 + 5.3826; //3.9565;
 
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
@@ -73,15 +72,12 @@ public class SwerveDrivetrain {
         eleftBack = hardwareMap.get(AnalogInput.class, "ebackLeft");
         erightFront = hardwareMap.get(AnalogInput.class, "efrontRight");
         erightBack = hardwareMap.get(AnalogInput.class, "ebackRight");
+        
 
-        aaeRightFront = new AbsoluteAnalogEncoder(erightFront, analogRange);
-        aaeRightFront.zero(E_FRONT_RIGHT_OFFSET);
-
-
-        leftFront = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_BACK_LEFT_OFFSET)); // removed .setInverted(true)
-        leftBack = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_FRONT_LEFT_OFFSET));
-        rightFront = new SwerveModule(mrightFront, srightFront, aaeRightFront);
-        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRange).zero(E_BACK_RIGHT_OFFSET));
+        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_LEFT_FRONT_OFFSET));
+        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_LEFT_BACK_OFFSET)); // removed .setInverted(true)
+        rightFront = new SwerveModule(mrightFront, srightFront, new AbsoluteAnalogEncoder(erightFront, analogRange).zero(E_RIGHT_FRONT_OFFSET));
+        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRange).zero(E_RIGHT_BACK_OFFSET));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -93,7 +89,7 @@ public class SwerveDrivetrain {
     }
 
 //    @Override
-    public void set(Pose pose) { // note 1/2 for Kyle and Josh: for rotating with the swerve, I've already tried making it so that if pose.head > 0.--, reverse specific wheel angles and/or speeds in the set and write methods. did not work.
+    public void set(Pose pose) {
         double x = pose.x;
         double y = pose.y;
         double head = pose.heading;
@@ -116,8 +112,7 @@ public class SwerveDrivetrain {
     }
 
 
-    public void write(double head, boolean isRight) { // note 2/2 for Kyle and Josh: I made a method called .setInverted() that would invert the encoder if heading > 0.--. Did not work.
-
+    public void write() {
 
         for (int i = 0; i < 4; i++) {
             SwerveModule m = swerveModules[i];
@@ -128,7 +123,6 @@ public class SwerveDrivetrain {
             
             m.update();
         }
-
     }
 
     public String getTelemetry() {

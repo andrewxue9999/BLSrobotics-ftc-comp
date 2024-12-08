@@ -67,7 +67,7 @@ public class Teleop extends LinearOpMode {
             }
 //            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.set(drive);
-            drivetrain.write(drive.heading, isRight);
+            drivetrain.write();
             drivetrain.getTelemetry();
 //            double testServoPower = gamepad1.left_stick_y;
 ////            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
