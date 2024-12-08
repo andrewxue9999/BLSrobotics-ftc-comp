@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.opmode;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,11 +45,12 @@ public class Teleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+
             // left stick to go forward, and right stick to turn.
             double driveY = gamepad1.left_stick_y;
             double driveX = -gamepad1.left_stick_x;
 
-            double azimuth = gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
+            double azimuth = -gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
 
             drivetrain.read();
 

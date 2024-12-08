@@ -32,10 +32,7 @@ public class SwerveDrivetrain {
     private AnalogInput eleftBack;
     private AnalogInput erightBack;
     private AbsoluteAnalogEncoder aaeRightFront;
-    private static double analogRangeRightFront = 3.3;
-    private static double analogRangeLeftFront = 3.3;
-    private static double analogRangeLeftBack = 3.3;
-    private static double analogRangeRightBack = 3.3;
+    private static double analogRange = 3.3;
 
 
     public static final double E_FRONT_RIGHT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
@@ -77,14 +74,14 @@ public class SwerveDrivetrain {
         erightFront = hardwareMap.get(AnalogInput.class, "efrontRight");
         erightBack = hardwareMap.get(AnalogInput.class, "ebackRight");
 
-        aaeRightFront = new AbsoluteAnalogEncoder(erightFront, analogRangeRightFront);
+        aaeRightFront = new AbsoluteAnalogEncoder(erightFront, analogRange);
         aaeRightFront.zero(E_FRONT_RIGHT_OFFSET);
 
 
-        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRangeLeftFront).zero(E_FRONT_LEFT_OFFSET)); // removed .setInverted(true)
-        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRangeLeftBack).zero(E_BACK_LEFT_OFFSET));
+        leftFront = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_BACK_LEFT_OFFSET)); // removed .setInverted(true)
+        leftBack = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_FRONT_LEFT_OFFSET));
         rightFront = new SwerveModule(mrightFront, srightFront, aaeRightFront);
-        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRangeRightBack).zero(E_BACK_RIGHT_OFFSET));
+        rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRange).zero(E_BACK_RIGHT_OFFSET));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
 //        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,13 +104,14 @@ public class SwerveDrivetrain {
                 d = y + head * (TRACKWIDTH / R);
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
+
         if (!maintainHeading) {
             wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
         }
 
         max = wheelSpeeds[0];
-        for (double currentNum : wheelSpeeds) { // get max of wheelSpeeds
-            if (currentNum > max) max = currentNum;
+        for (double i : wheelSpeeds) { // get max of wheelSpeeds
+            if (i > max) max = i;
         }
     }
 
@@ -127,18 +125,7 @@ public class SwerveDrivetrain {
             if (Math.abs(max) > 1) wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
-
-//            if (head >= HEADING_DEADZONE) {
-//
-//                if (i == 0 || i == 1) {
-//                        m.setInverted(true);
-//                }
-//            }
-//            else {
-//                // very inefficient code but need to debug rn
-//                m.setInverted(false);
-//            }
-
+            
             m.update();
         }
 
