@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -25,8 +26,7 @@ public class Teleop extends LinearOpMode {
     public static double fw_r = 8;
     public static double str_r = 8;
     public SwerveDrivetrain drivetrain;
-    public boolean isRight;
-
+    public Pivot pivot;
 
     @Override
     public void runOpMode() {
@@ -38,14 +38,22 @@ public class Teleop extends LinearOpMode {
 
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
-        // Wait for the game to start (driver presses START)
+
+        Pivot pivot = new Pivot();
+        pivot.init(hardwareMap, "pivot");
+        
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-
+            if (gamepad1.right_bumper) {
+                pivot.toggle(true);
+            } 
+            else if (gamepad1.left_bumper) {
+                pivot.toggle(false);
+            }
+            
             // left stick to go forward, and right stick to turn.
             double driveY = gamepad1.left_stick_y;
             double driveX = -gamepad1.left_stick_x;
@@ -59,12 +67,7 @@ public class Teleop extends LinearOpMode {
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
-            if (azimuth > 0) {
-                isRight = true;
-            }
-            else if (azimuth < 0) {
-                isRight = false;
-            }
+
 //            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.set(drive);
             drivetrain.write();
