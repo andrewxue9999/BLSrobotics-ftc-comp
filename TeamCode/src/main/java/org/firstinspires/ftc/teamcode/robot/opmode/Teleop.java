@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -47,11 +48,15 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.right_bumper) {
-                pivot.toggle(true);
+            if (gamepad1.dpad_up) {
+//                pivot.toggle(true);
+                pivot.setPower(1);
+                DcMotor thing = hardwareMap.get(DcMotor.class, "pivot");
+                thing.setPower(1);
             } 
-            else if (gamepad1.left_bumper) {
-                pivot.toggle(false);
+            else if (gamepad1.dpad_down) {
+//                pivot.toggle(false);
+                pivot.setPower(-1);
             }
             
             // left stick to go forward, and right stick to turn.
@@ -79,7 +84,8 @@ public class Teleop extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
-                telemetry.addData("Drivetrains", drivetrain.getTelemetry());
+            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
+            telemetry.addData("Pivot position", pivot.getTelemetry());
 //            telemetry.addData("Motors", "left front (%.2f), left back (%.2f), right front (%.2f), right back", leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             telemetry.update();
         }
