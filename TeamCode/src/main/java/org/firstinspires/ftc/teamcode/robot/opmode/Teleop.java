@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
-
-@TeleOp(name="2024-25 Swerve TeleOp Code", group="Linear OpMode")
+import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
+@TeleOp(name="skibidiTeleop", group="Linear OpMode")
 public class Teleop extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -28,6 +28,7 @@ public class Teleop extends LinearOpMode {
     public static double str_r = 8;
     public SwerveDrivetrain drivetrain;
     public Pivot pivot;
+    private Claw claw;
 
     @Override
     public void runOpMode() {
@@ -40,8 +41,11 @@ public class Teleop extends LinearOpMode {
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
 
-        Pivot pivot = new Pivot();
+        pivot = new Pivot();
         pivot.init(hardwareMap, "pivot");
+
+        claw = new Claw();
+        claw.init(hardwareMap, "claw");
         
         waitForStart();
         runtime.reset();
@@ -49,17 +53,9 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_up) {
-//                pivot.toggle(true);
-                pivot.setPower(1);
-                DcMotor thing = hardwareMap.get(DcMotor.class, "pivot");
-                thing.setPower(1);
-            } 
-            else if (gamepad1.dpad_down) {
-//                pivot.toggle(false);
-                pivot.setPower(-1);
+            if (gamepad1.start) {
+                drivetrain.resetIMU();
             }
-            
             // left stick to go forward, and right stick to turn.
             double driveY = gamepad1.left_stick_y;
             double driveX = -gamepad1.left_stick_x;
@@ -74,20 +70,28 @@ public class Teleop extends LinearOpMode {
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
 
-//            drivetrain.set(new Pose(driveY, driveX, azimuth));
+            drivetrain.set(new Pose(driveY, driveX, azimuth));
             drivetrain.set(drive);
             drivetrain.write();
             drivetrain.getTelemetry();
-//            double testServoPower = gamepad1.left_stick_y;
-////            double testServoPower = Range.clip(testServoEnableDouble, -1.0, 1.0); // don't question the naming convention
 
+            if (gamepad1.right_bumper) {
+                pivot.up(0.6);
+            } else if (gamepad1.left_bumper) {
+                pivot.down(0.6);
+            }
+
+            if (gamepad1.dpad_up) {
+                pivot.driveUp();
+            } else if (gamepad1.dpad_down) {
+                pivot.driveDown();
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
             telemetry.addData("Drivetrains", drivetrain.getTelemetry());
             telemetry.addData("Pivot position", pivot.getTelemetry());
-//            telemetry.addData("Motors", "left front (%.2f), left back (%.2f), right front (%.2f), right back", leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             telemetry.update();
         }
     }

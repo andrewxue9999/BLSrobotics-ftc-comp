@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.robot.hardware;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
@@ -33,7 +35,6 @@ public class SwerveDrivetrain {
     private AnalogInput erightBack;
     private static double analogRange = 3.3;
 
-
     public static final double E_RIGHT_FRONT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
     public static final double E_LEFT_FRONT_OFFSET = -Math.PI/2 + 5.1198; //1.14424;
     public static final double E_LEFT_BACK_OFFSET = -Math.PI/2 + 4.8342; // 1.487;
@@ -46,7 +47,8 @@ public class SwerveDrivetrain {
     double[] wheelAngles = new double[4];
     double max = 1.1;
     public boolean maintainHeading = false;
-    private double HEADING_DEADZONE = 0.05;
+
+    public IMU imu;
 
     public void init(@NonNull HardwareMap hardwareMap) {
 
@@ -72,16 +74,21 @@ public class SwerveDrivetrain {
         eleftBack = hardwareMap.get(AnalogInput.class, "ebackLeft");
         erightFront = hardwareMap.get(AnalogInput.class, "efrontRight");
         erightBack = hardwareMap.get(AnalogInput.class, "ebackRight");
-        
 
-        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_LEFT_FRONT_OFFSET));
-        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_LEFT_BACK_OFFSET)); // removed .setInverted(true)
+
+        leftFront = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_LEFT_BACK_OFFSET));
+        leftBack = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_LEFT_FRONT_OFFSET)); // removed .setInverted(true)
         rightFront = new SwerveModule(mrightFront, srightFront, new AbsoluteAnalogEncoder(erightFront, analogRange).zero(E_RIGHT_FRONT_OFFSET));
         rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRange).zero(E_RIGHT_BACK_OFFSET));
 
         swerveModules = new SwerveModule[]{leftFront, leftBack, rightFront, rightBack};
-//        for (SwerveModule m : swerveModules) m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD))
+        ;
+        imu.initialize(parameters);
     }
 
     public void read() {
@@ -130,5 +137,9 @@ public class SwerveDrivetrain {
                 leftBack.getTelemetry("leftRearModule") + "\n" +
                 rightFront.getTelemetry("rightFrontModule") + "\n" +
                 rightBack.getTelemetry("rightRearModule") + "\n";
+    }
+
+    public void resetIMU() {
+        imu.resetYaw();
     }
 }

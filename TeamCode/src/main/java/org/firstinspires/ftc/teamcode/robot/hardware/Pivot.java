@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -22,15 +23,14 @@ import java.util.Locale;
 
 public class Pivot {
     private DcMotor pivot;
-  private final double DRIVE_RATIO = (52 * 2 * 2) / 18.0; //208/18
-    private final double TPR = 28 * DRIVE_RATIO; //ticks per 1 wheel irl rotation;
+    private final double GEAR_RATIO = 300;
+    private final double TPR = 28 * GEAR_RATIO; //ticks per rotation
 
-    private boolean isAtTop = false;
-    private final double topPosTicks = -586; // temporary zero: extended all the way up (diagonal)
+    public boolean scoring;
+    public boolean pickup;
+    public boolean home;
+    private final int topPosTicks = 2333; // temporary zero: extended all the way up (diagonal)
     private final double bottomPosTicks = -2758;
-
-    private final double topPos = TPR * Math.PI / 2;
-    private final double bottomPos = TPR * Math.PI;
     private PIDFController PIDFcontroller;
     private final double P = 0.2;
     private final double I = 0.0;
@@ -44,57 +44,44 @@ public class Pivot {
 
        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
        pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        pivot.setDirection(DcMotor.Direction.REVERSE);
 
        PIDFcontroller = new PIDFController(P, I, D, F);
        PIDFcontroller.setPIDF(P, I, D, F);
-  }
-
-    public void toggle(boolean goToTop) {
-
-        // power = 0 (class variable; declared outside of the method)
-        // if goToTop, power = PIDF calculated value
-        // pivot.setPower(power)
-        //
-
-        if (goToTop) { // may need to implement a while loop for this soon; otherwise, it will only go up partially
-            error = topPosTicks - pivot.getCurrentPosition();
-
-            double power = Range.clip(PIDFcontroller.calculate(0, error), -1, 1);
-
-            if (Double.isNaN(power)) {
-                power = 0;
-            }
-
-            pivot.setPower(0.5);
-            placeholderPower = power;
-
-//            pivot.setPower(power);
-            isAtTop = true;
-        }
-        else if (!goToTop) {
-            error = bottomPosTicks - pivot.getCurrentPosition();
-
-            double power = Range.clip(PIDFcontroller.calculate(0, error), -1, 1);
-            if (Double.isNaN(power)) {
-                power = 0;
-            }
-            pivot.setPower(0.5);
-            placeholderPower = power;
-
-//            pivot.setPower(power);
-            isAtTop = false;
-        }
     }
 
-    public void setPower(double power) { // for debugging purposes
+
+
+    public void up(double power) { // for debugging purposes
+        pivot.setTargetPosition(topPosTicks);
+
+        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
         pivot.setPower(power);
     }
 
-    public boolean atTop() {
-        return isAtTop;
+    public void down(double power) {
+        pivot.setTargetPosition(0);
+        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        pivot.setPower(power);
     }
 
-  public String getTelemetry() {
-      return String.format(Locale.ENGLISH, "current pivot position in ticks %d, error %.2f, at top: %b, power: %.2f", pivot.getCurrentPosition(), error, isAtTop, pivot.getPower());
-  }
+    public void driveUp() {
+        pivot.setPower(0.1);
+    }
+
+    public void driveDown() {
+        pivot.setPower(-0.1);
+    }
+
+
+    public String getTelemetry() {
+      return String.format(Locale.ENGLISH, "current pivot position in ticks %d, error %.2f, power: %.2f, target ticks: %d", pivot.getCurrentPosition(), error, pivot.getPower(), pivot.getTargetPosition());
+    }
 }
