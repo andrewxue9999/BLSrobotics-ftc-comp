@@ -87,6 +87,11 @@ public class Teleop extends LinearOpMode {
                 pivot.driveDown();
             }
 
+            if (gamepad1.a) {
+                claw.toggle();
+            }
+
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));

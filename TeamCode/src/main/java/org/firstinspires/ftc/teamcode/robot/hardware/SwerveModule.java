@@ -47,7 +47,8 @@ public class SwerveModule {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        servo = s;encoder = e;
+        servo = s;
+        encoder = e;
 
         scontroller = new PIDController(P, I, D);
 

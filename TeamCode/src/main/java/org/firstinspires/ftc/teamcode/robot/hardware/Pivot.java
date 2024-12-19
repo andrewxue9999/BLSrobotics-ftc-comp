@@ -37,7 +37,6 @@ public class Pivot {
     private final double D = 0.0;
     private final double F = 0.2;
     private double error;
-    private double placeholderPower;
 
     public void init(@NonNull HardwareMap hardwareMap, String name) {
        pivot = hardwareMap.get(DcMotor.class, name);
@@ -45,30 +44,22 @@ public class Pivot {
        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
        pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        pivot.setDirection(DcMotor.Direction.REVERSE);
+       pivot.setDirection(DcMotor.Direction.REVERSE);
 
        PIDFcontroller = new PIDFController(P, I, D, F);
        PIDFcontroller.setPIDF(P, I, D, F);
     }
 
 
-
     public void up(double power) { // for debugging purposes
         pivot.setTargetPosition(topPosTicks);
-
         pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
         pivot.setPower(power);
     }
 
     public void down(double power) {
         pivot.setTargetPosition(0);
         pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
         pivot.setPower(power);
     }
 

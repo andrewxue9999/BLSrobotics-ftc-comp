@@ -28,24 +28,18 @@ public class Claw {
 
     // Scale the range of the servo to only operate between defined limits
 
-    public void toggle(boolean button) {
-        if (button) {
-            if (isOpen) {
-                // Move the servo to the left limit (e.g., -135°)
+    public void toggle() {
+        if (isOpen) {
+            // Move the servo to the left limit (e.g., -135°)
 
-                isOpen = false;
-                clawServo.setPosition(0);
-            } else {
-                // Move the servo to the right limit (e.g., +135°)
-                clawServo.setPosition(1);
-                isOpen = true;
-            }
+            isOpen = false;
+            clawServo.setPosition(0);
+        } else {
+            // Move the servo to the right limit (e.g., +135°)
+            clawServo.setPosition(1);
+            isOpen = true;
         }
-
-
     }
-
-
 
     public boolean getState() {
         return isOpen;
