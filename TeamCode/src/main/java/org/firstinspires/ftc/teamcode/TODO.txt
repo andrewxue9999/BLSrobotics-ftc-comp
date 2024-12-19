@@ -1,7 +1,7 @@
 Drivetrain:
-1. Fix azimuth--correct directions for individual motors
-2. Make swerve drive field centric
-3. Ask Kyle about swerve input lag
+1. Ask Kyle about swerve input lag
+2. leftFront and leftBack swapping issue?
+3. each crservo gets its own individual PID constants (to help address individual oscillation issues)
 
 Vision:
 1. Set Up Limelight on Control Hub: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/setup

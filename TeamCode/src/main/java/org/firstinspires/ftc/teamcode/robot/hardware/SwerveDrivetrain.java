@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 
 @Config
 public class SwerveDrivetrain {
@@ -75,9 +77,9 @@ public class SwerveDrivetrain {
         erightFront = hardwareMap.get(AnalogInput.class, "efrontRight");
         erightBack = hardwareMap.get(AnalogInput.class, "ebackRight");
 
-
-        leftBack = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_LEFT_BACK_OFFSET));
-        leftFront = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_LEFT_FRONT_OFFSET)); // removed .setInverted(true)
+// swap leftFront and leftBack (control hub naming issue?? wire connecting issue??)
+        leftFront = new SwerveModule(mleftBack, sleftBack, new AbsoluteAnalogEncoder(eleftBack, analogRange).zero(E_LEFT_BACK_OFFSET));
+        leftBack = new SwerveModule(mleftFront, sleftFront, new AbsoluteAnalogEncoder(eleftFront, analogRange).zero(E_LEFT_FRONT_OFFSET)); // removed .setInverted(true)
         rightFront = new SwerveModule(mrightFront, srightFront, new AbsoluteAnalogEncoder(erightFront, analogRange).zero(E_RIGHT_FRONT_OFFSET));
         rightBack = new SwerveModule(mrightBack, srightBack, new AbsoluteAnalogEncoder(erightBack, analogRange).zero(E_RIGHT_BACK_OFFSET));
 
@@ -86,8 +88,7 @@ public class SwerveDrivetrain {
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD))
-        ;
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
     }
 
@@ -97,14 +98,18 @@ public class SwerveDrivetrain {
 
 //    @Override
     public void set(Pose pose) {
-        double x = pose.x;
-        double y = pose.y;
-        double head = pose.heading;
+        double x = pose.x; // "ly" x is controlled by left_stick_y
+        double y = pose.y; // "lx" y is controlled by left_stick_x
+        double rotation = pose.heading;
 
-        double a = x - head * (WHEELBASE / R),
-                b = x + head * (WHEELBASE / R),
-                c = y - head * (TRACKWIDTH / R),
-                d = y + head * (TRACKWIDTH / R);
+        double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        y = -x * Math.sin(heading) + y * Math.cos(heading);
+        x = x * Math.cos(heading) + y * Math.sin(heading);
+
+        double a = x - rotation * (WHEELBASE / R),
+                b = x + rotation * (WHEELBASE / R),
+                c = y - rotation * (TRACKWIDTH / R),
+                d = y + rotation * (TRACKWIDTH / R);
 
         wheelSpeeds = new double[]{Math.hypot(b, c), Math.hypot(b, d), Math.hypot(a, d), Math.hypot(a, c)};
 
