@@ -12,6 +12,7 @@ Vision:
 6. Integrate Vision.java into Teleop.java once the hardware is set up
 7. add IMU
 
+
 Localization:
 1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
 
