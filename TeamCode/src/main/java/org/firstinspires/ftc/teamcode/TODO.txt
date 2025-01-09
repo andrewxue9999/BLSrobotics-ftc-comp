@@ -2,6 +2,7 @@ Drivetrain:
 1. Ask Kyle about swerve input lag
 2. leftFront and leftBack swapping issue?
 3. each crservo gets its own individual PID constants (to help address individual oscillation issues)
+4. look into lines 105-107 in SwerveDrivetrain.java (ensure that field centric trigonometry is correct)
 
 Vision:
 1. Set Up Limelight on Control Hub: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/setup
