@@ -38,7 +38,7 @@ public class SwerveModule {
     private double position;
     private double target;
 
-    public double lastMotorPower = 0; // IGNORE BUT DO NOT REMOVE
+    private double power = 0;
     private double error;
 
     public SwerveModule(DcMotorEx m, CRServo s, AbsoluteAnalogEncoder e) { //, double r) { //, double sp, double si, double sd) {
@@ -76,7 +76,7 @@ public class SwerveModule {
 
         error = normalizeRadians(target - currentPos);
 
-        double power = Range.clip(scontroller.calculate(0, error), -1, 1);
+        power = Range.clip(scontroller.calculate(0, error), -1, 1);
         if (Double.isNaN(power)) power = 0; // set 0 if null calculation
         if (Math.abs(error) <= DEADBAND) {
             power += 0;
@@ -122,6 +122,6 @@ public class SwerveModule {
     }
 
     public String getTelemetry(String name) {
-        return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), lastMotorPower, error);
+        return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), power, error);
     }
 }

@@ -24,8 +24,8 @@ public class Teleop extends LinearOpMode {
     private final double R = Math.hypot(TRACKWIDTH, WHEELBASE);
     private SlewRateLimiter fw;
     private SlewRateLimiter str;
-    public static double fw_r = 8;
-    public static double str_r = 8;
+    public static double fw_r = 4;
+    public static double str_r = 4;
     public SwerveDrivetrain drivetrain;
     public Pivot pivot;
     private Claw claw;
@@ -70,7 +70,7 @@ public class Teleop extends LinearOpMode {
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
 
-            drivetrain.set(new Pose(driveY, driveX, azimuth));
+            drivetrain.set(new Pose(driveX, driveY, azimuth));
             drivetrain.set(drive);
             drivetrain.write();
             drivetrain.getTelemetry();
@@ -88,7 +88,7 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                claw.toggle();
+                claw.toggle(runtime);
             }
 
 

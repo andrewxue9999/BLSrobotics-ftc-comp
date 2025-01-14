@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import java.util.Locale;
+
 
 @Config
 public class SwerveDrivetrain {
@@ -51,6 +53,7 @@ public class SwerveDrivetrain {
     public boolean maintainHeading = false;
 
     public IMU imu;
+    private double heading;
 
     public void init(@NonNull HardwareMap hardwareMap) {
 
@@ -98,13 +101,17 @@ public class SwerveDrivetrain {
 
 //    @Override
     public void set(Pose pose) {
-        double x = pose.x; // "ly" x is controlled by left_stick_y
-        double y = pose.y; // "lx" y is controlled by left_stick_x
+        double x = pose.x; // "ly" x is controlled by left_stick_x
+        double y = pose.y; // "lx" y is controlled by left_stick_y
         double rotation = pose.heading;
 
-        double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        y = -x * Math.sin(heading) + y * Math.cos(heading);
-        x = x * Math.cos(heading) + y * Math.sin(heading);
+
+        heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+//        x = -x * Math.sin(heading) + y * Math.cos(heading);
+//        y = x * Math.cos(heading) + y * Math.sin(heading);
+//        double r = Math.hypot(x, y);
+//        y = r * Math.cos(Math.atan(x / y) - heading);
+//        x = r * Math.sin(Math.atan(x / y) - heading);
 
         double a = x - rotation * (WHEELBASE / R),
                 b = x + rotation * (WHEELBASE / R),
@@ -141,7 +148,8 @@ public class SwerveDrivetrain {
         return leftFront.getTelemetry("leftFrontModule") + "\n" +
                 leftBack.getTelemetry("leftRearModule") + "\n" +
                 rightFront.getTelemetry("rightFrontModule") + "\n" +
-                rightBack.getTelemetry("rightRearModule") + "\n";
+                rightBack.getTelemetry("rightRearModule") + "\n" +
+                String.format(Locale.ENGLISH, "IMU Yaw (Heading) = %.2f", heading);
     }
 
     public void resetIMU() {
