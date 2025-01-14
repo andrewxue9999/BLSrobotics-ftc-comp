@@ -109,6 +109,9 @@ public class SwerveDrivetrain {
         heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 //        x = -x * Math.sin(heading) + y * Math.cos(heading);
 //        y = x * Math.cos(heading) + y * Math.sin(heading);
+        x = x * Math.cos(heading) - y * Math.sin(heading);
+        y = x * Math.sin(heading) + y * Math.cos(heading);
+
 //        double r = Math.hypot(x, y);
 //        y = r * Math.cos(Math.atan(x / y) - heading);
 //        x = r * Math.sin(Math.atan(x / y) - heading);

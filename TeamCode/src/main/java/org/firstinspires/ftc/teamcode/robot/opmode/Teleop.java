@@ -41,11 +41,11 @@ public class Teleop extends LinearOpMode {
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
 
-        pivot = new Pivot();
-        pivot.init(hardwareMap, "pivot");
+//        pivot = new Pivot();
+//        pivot.init(hardwareMap, "pivot");
 
-        claw = new Claw();
-        claw.init(hardwareMap, "claw");
+//        claw = new Claw();
+//        claw.init(hardwareMap, "claw");
         
         waitForStart();
         runtime.reset();
@@ -75,28 +75,28 @@ public class Teleop extends LinearOpMode {
             drivetrain.write();
             drivetrain.getTelemetry();
 
-            if (gamepad1.right_bumper) {
-                pivot.up(0.6);
-            } else if (gamepad1.left_bumper) {
-                pivot.down(0.6);
-            }
+//            if (gamepad1.right_bumper) {
+//                pivot.up(0.6);
+//            } else if (gamepad1.left_bumper) {
+//                pivot.down(0.6);
+//            }
 
-            if (gamepad1.dpad_up) {
-                pivot.driveUp();
-            } else if (gamepad1.dpad_down) {
-                pivot.driveDown();
-            }
+//            if (gamepad1.dpad_up) {
+//                pivot.driveUp();
+//            } else if (gamepad1.dpad_down) {
+//                pivot.driveDown();
+//            }
 
-            if (gamepad1.a) {
-                claw.toggle(runtime);
-            }
+//            if (gamepad1.a) {
+//                claw.toggle(runtime);
+//            }
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
             telemetry.addData("Drivetrains", drivetrain.getTelemetry());
-            telemetry.addData("Pivot position", pivot.getTelemetry());
+//            telemetry.addData("Pivot position", pivot.getTelemetry());
             telemetry.update();
         }
     }
