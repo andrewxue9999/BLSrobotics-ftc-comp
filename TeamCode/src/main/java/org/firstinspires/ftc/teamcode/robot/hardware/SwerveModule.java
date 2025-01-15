@@ -76,7 +76,7 @@ public class SwerveModule {
 
         error = normalizeRadians(target - currentPos);
 
-        power = Range.clip(scontroller.calculate(0, error), -1, 1);
+        double power = Range.clip(scontroller.calculate(0, error), -1, 1);
         if (Double.isNaN(power)) power = 0; // set 0 if null calculation
         if (Math.abs(error) <= DEADBAND) {
             power += 0;

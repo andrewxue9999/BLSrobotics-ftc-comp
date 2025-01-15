@@ -106,15 +106,23 @@ public class SwerveDrivetrain {
         double rotation = pose.heading;
 
 
-        heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 //        x = -x * Math.sin(heading) + y * Math.cos(heading);
 //        y = x * Math.cos(heading) + y * Math.sin(heading);
-        x = x * Math.cos(heading) - y * Math.sin(heading);
-        y = x * Math.sin(heading) + y * Math.cos(heading);
+//        x = x * Math.cos(heading) - y * Math.sin(heading);
+//        y = x * Math.sin(heading) + y * Math.cos(heading);
 
 //        double r = Math.hypot(x, y);
-//        y = r * Math.cos(Math.atan(x / y) - heading);
-//        x = r * Math.sin(Math.atan(x / y) - heading);
+//        double currentAngle = Math.atan(y / x);
+//
+//        y = r * Math.sin(currentAngle - heading);
+//        x = r * Math.cos(currentAngle - heading);
+        double tempX = x * Math.cos(heading) - y * Math.sin(heading);
+        double tempY = x * Math.sin(heading) + y * Math.cos(heading);
+//        x = Math.signum(x) * Math.abs(tempX);
+//        y = Math.signum(y) * Math.abs(tempY);
+        x = tempX;
+        y = tempY;
 
         double a = x - rotation * (WHEELBASE / R),
                 b = x + rotation * (WHEELBASE / R),
