@@ -124,18 +124,18 @@ public class SwerveDrivetrain {
 
         trueHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        // editing
-        if(rotation >= Math.pow(10, -3)) {
+//        // editing
+//        if (rotation >= Math.pow(10, -3)) {
+////            headingError = normalizeRadians(rotation - trueHeading);
+//            //        if (Math.abs(headingError) > Math.PI / 2) {
+//            //            rotation = normalizeRadians(rotation - Math.PI);
+//            //        }
+//
 //            headingError = normalizeRadians(rotation - trueHeading);
-            //        if (Math.abs(headingError) > Math.PI / 2) {
-            //            rotation = normalizeRadians(rotation - Math.PI);
-            //        }
-
-            headingError = normalizeRadians(rotation - trueHeading);
-
-//            double power = Range.clip(headingController.calculate(0, headingError), -1, 1);
-//            if (Double.isNaN(power)) power = 0; // set 0 if null calculation
-        }
+//
+////            double power = Range.clip(headingController.calculate(0, headingError), -1, 1);
+////            if (Double.isNaN(power)) power = 0; // set 0 if null calculation
+//        }
         // editing
 
         // field centric trig

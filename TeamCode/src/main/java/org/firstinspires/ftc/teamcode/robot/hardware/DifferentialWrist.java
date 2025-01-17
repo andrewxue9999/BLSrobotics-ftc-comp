@@ -10,12 +10,59 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class DifferentialWrist {
-    private Servo wrist;
+    private Servo leftWrist;
+    private Servo rightWrist;
 
-    public void init(@NonNull HardwareMap hardwareMap, String name) {
-        wrist = hardwareMap.get(Servo.class, name);
+    private final double intakePos = 0;
+    private final double scoringPos = 0.5;
+    private final double dropPos = 1.0;
+    private final double hangPos = 0.3;
+
+    private String currentPos;
+
+    public void init(@NonNull HardwareMap hardwareMap, String leftWristName, String rightWristName) {
+        leftWrist = hardwareMap.get(Servo.class, leftWristName);
+        rightWrist = hardwareMap.get(Servo.class, rightWristName);
+
+        leftWrist.scaleRange(intakePos, dropPos);
+        rightWrist.scaleRange(intakePos, dropPos);
     }
-    public String getTelemetry(String name) {
-        return String.format("Open %S", name);
+
+    public void goToPos(String command) {
+        if (command.equals("intake")) {
+            leftWrist.setPosition(intakePos);
+            rightWrist.setPosition(intakePos);
+
+            currentPos = command;
+        } else if (command.equals("score")) {
+            leftWrist.setPosition(scoringPos);
+            rightWrist.setPosition(scoringPos);
+
+            currentPos = command;
+        } else if (command.equals("drop")) {
+            leftWrist.setPosition(dropPos);
+            rightWrist.setPosition(dropPos);
+
+            currentPos = command;
+        } else if (command.equals("hang")) {
+            leftWrist.setPosition(hangPos);
+            rightWrist.setPosition(hangPos);
+
+            currentPos = command;
+        }
+    }
+
+    public void rotate(double angle) {
+
+        // s = r * theta
+        // .9 .0805
+    }
+
+    public String returnPos() {
+        return currentPos;
+    }
+
+    public String getTelemetry() {
+        return String.format("Position: %S", currentPos);
     }
 }
