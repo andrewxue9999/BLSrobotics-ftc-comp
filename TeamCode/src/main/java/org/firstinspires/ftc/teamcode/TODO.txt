@@ -18,3 +18,12 @@ Localization:
 Auto:
 1. Implement basic Roadrunner thing that literally just parks, since that's all we're doing for the upcoming scrimmage apparently
 
+Diff Wrist:
+1. https://github.com/ameliorater/ftc-diff-swerve/blob/master/DriveModule.java
+2. ^ includes their distance traveled methodology
+
+Pivot:
+1. Look into
+
+Claw:
+1. Optimize the set bounds method
