@@ -2,7 +2,6 @@ Drivetrain:
 1. Ask Kyle about swerve input lag
 2. leftFront and leftBack swapping issue?
 3. each crservo gets its own individual PID constants (to help address individual oscillation issues)
-4. look into lines 105-107 in SwerveDrivetrain.java (ensure that field centric trigonometry is correct)
 
 Vision:
 1. Set Up Limelight on Control Hub: https://docs.limelightvision.io/docs/docs-limelight/getting-started/FTC/setup
@@ -13,10 +12,18 @@ Vision:
 6. Integrate Vision.java into Teleop.java once the hardware is set up
 7. add IMU
 
-
 Localization:
 1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
 
 Auto:
 1. Implement basic Roadrunner thing that literally just parks, since that's all we're doing for the upcoming scrimmage apparently
 
+Diff Wrist:
+1. https://github.com/ameliorater/ftc-diff-swerve/blob/master/DriveModule.java
+2. ^ includes their distance traveled methodology
+
+Pivot:
+1. Look into
+
+Claw:
+1. Optimize the set bounds method

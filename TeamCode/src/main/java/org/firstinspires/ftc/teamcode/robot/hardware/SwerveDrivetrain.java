@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -15,6 +17,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.util.Range;
 
 import java.util.Locale;
 
@@ -53,7 +57,13 @@ public class SwerveDrivetrain {
     public boolean maintainHeading = false;
 
     public IMU imu;
-    private double heading;
+    private double trueHeading;
+//    private PIDController headingController;
+//    private final double HEADING_P = 0.2;
+//    private final double HEADING_I = 0;
+//    private final double HEADING_D = 0;
+    private double headingError;
+
 
     public void init(@NonNull HardwareMap hardwareMap) {
 
@@ -93,6 +103,11 @@ public class SwerveDrivetrain {
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
+
+        resetIMU();
+
+//        headingController = new PIDController(HEADING_P, HEADING_I, HEADING_D);
+//        headingController.setPID(HEADING_P, HEADING_I, HEADING_D);
     }
 
     public void read() {
@@ -101,29 +116,35 @@ public class SwerveDrivetrain {
 
 //    @Override
     public void set(Pose pose) {
+//        headingController.setPID(HEADING_P, HEADING_I, HEADING_D);
+
         double x = pose.x; // "ly" x is controlled by left_stick_x
         double y = pose.y; // "lx" y is controlled by left_stick_y
         double rotation = pose.heading;
 
+        trueHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-        heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-//        x = -x * Math.sin(heading) + y * Math.cos(heading);
-//        y = x * Math.cos(heading) + y * Math.sin(heading);
-//        x = x * Math.cos(heading) - y * Math.sin(heading);
-//        y = x * Math.sin(heading) + y * Math.cos(heading);
-
-//        double r = Math.hypot(x, y);
-//        double currentAngle = Math.atan(y / x);
+//        // editing
+//        if (rotation >= Math.pow(10, -3)) {
+////            headingError = normalizeRadians(rotation - trueHeading);
+//            //        if (Math.abs(headingError) > Math.PI / 2) {
+//            //            rotation = normalizeRadians(rotation - Math.PI);
+//            //        }
 //
-//        y = r * Math.sin(currentAngle - heading);
-//        x = r * Math.cos(currentAngle - heading);
-        double tempX = x * Math.cos(heading) - y * Math.sin(heading);
-        double tempY = x * Math.sin(heading) + y * Math.cos(heading);
-//        x = Math.signum(x) * Math.abs(tempX);
-//        y = Math.signum(y) * Math.abs(tempY);
+//            headingError = normalizeRadians(rotation - trueHeading);
+//
+////            double power = Range.clip(headingController.calculate(0, headingError), -1, 1);
+////            if (Double.isNaN(power)) power = 0; // set 0 if null calculation
+//        }
+        // editing
+
+        // field centric trig
+        double tempX = x * Math.cos(trueHeading) - y * Math.sin(trueHeading);
+        double tempY = x * Math.sin(trueHeading) + y * Math.cos(trueHeading);
         x = tempX;
         y = tempY;
 
+        // core swerve logic
         double a = x - rotation * (WHEELBASE / R),
                 b = x + rotation * (WHEELBASE / R),
                 c = y - rotation * (TRACKWIDTH / R),
@@ -135,6 +156,7 @@ public class SwerveDrivetrain {
             wheelAngles = new double[]{Math.atan2(b, c), Math.atan2(b, d), Math.atan2(a, d), Math.atan2(a, c)}; // should be all in rads
         }
 
+        // to be used to normalize speeds to <= 1.0
         max = wheelSpeeds[0];
         for (double i : wheelSpeeds) { // get max of wheelSpeeds
             if (i > max) max = i;
@@ -150,7 +172,9 @@ public class SwerveDrivetrain {
             if (Math.abs(max) > 1) wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
-            
+//            m.setTargetRotation(((wheelAngles[i]) + headingError) % (2*Math.PI));
+
+
             m.update();
         }
     }
@@ -160,7 +184,7 @@ public class SwerveDrivetrain {
                 leftBack.getTelemetry("leftRearModule") + "\n" +
                 rightFront.getTelemetry("rightFrontModule") + "\n" +
                 rightBack.getTelemetry("rightRearModule") + "\n" +
-                String.format(Locale.ENGLISH, "IMU Yaw (Heading) = %.2f", heading);
+                String.format(Locale.ENGLISH, "IMU Yaw (Heading) = %.2f\n Heading Error = %.2f", trueHeading, headingError);
     }
 
     public void resetIMU() {

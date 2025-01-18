@@ -27,7 +27,6 @@ public class Claw {
         clawServo = hardwareMap.get(Servo.class, name);
 
         clawServo.setPosition(HOME_POINT);
-
     }
 
     // Scale the range of the servo to only operate between defined limits
