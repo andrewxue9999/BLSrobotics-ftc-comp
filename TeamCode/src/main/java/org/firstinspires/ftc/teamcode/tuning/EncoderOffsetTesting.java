@@ -77,21 +77,27 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
             telemetry.addData("newFrontRightRad", newFrontRightRad);
             telemetry.addData("newFrontRightDeg", newFrontRightDeg);
+            telemetry.addData("frontRightVoltz", hardwareMap.get(AnalogInput.class, "efrontRight").getVoltage());
 
             telemetry.addData("", "" + "\n");
 
             telemetry.addData("newFrontLeftRad", newFrontLeftRad);
             telemetry.addData("newFrontLeftDeg", newFrontLeftDeg);
+            telemetry.addData("frontLeftVoltz", hardwareMap.get(AnalogInput.class, "efrontLeft").getVoltage());
 
-            telemetry.addData("", "" + "\n");
+            telemetry.addData("","" + "\n");
 
             telemetry.addData("newBackLeftRad", newBackLeftRad);
             telemetry.addData("newBackLeftDeg", newBackLeftDeg);
+            telemetry.addData("backLeftVoltz", hardwareMap.get(AnalogInput.class, "ebackLeft").getVoltage());
+
 
             telemetry.addData("", "" + "\n");
 
             telemetry.addData("newBackRightRad", newBackRightRad);
             telemetry.addData("newBackRightDeg", newBackRightDeg);
+            telemetry.addData("backRightVoltz", hardwareMap.get(AnalogInput.class, "ebackRight").getVoltage());
+
 
             telemetry.addData("", "" + "\n\n");
 

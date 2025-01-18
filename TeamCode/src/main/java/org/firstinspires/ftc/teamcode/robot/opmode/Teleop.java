@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
+//import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
@@ -28,7 +28,7 @@ public class Teleop extends LinearOpMode {
     public static double fw_r = 4;
     public static double str_r = 4;
     public SwerveDrivetrain drivetrain;
-    public Pivot pivot;
+//    public Pivot pivot;
     private Claw claw;
 
     @Override
