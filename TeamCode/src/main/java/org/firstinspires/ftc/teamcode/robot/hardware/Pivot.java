@@ -18,7 +18,7 @@ public class Pivot extends OpMode {
 
     public static int target = 0;
 
-    private final double ticks_in_degree = ((50/15)*28*125)/360;
+    private final double ticks_in_degree = 700/180.0;
 
     private DcMotorEx arm_motor;
 
@@ -28,7 +28,7 @@ public class Pivot extends OpMode {
         controller = new PIDController(p, i, d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        arm_motor = hardwareMap.get(DcMotorEx.class, "pivot");
+        arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor0");
     }
 
     @Override
