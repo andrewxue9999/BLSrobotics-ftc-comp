@@ -40,25 +40,16 @@ public class Claw {
 
             isOpen = false;
             clawServo.setPosition(0);
+
+            // do NOT use TimeUnit.MILLISEOCNDS.sleep(400), as this pauses the entire robot.
         } else if (!isOpen && time.time() > lastTime + TIME_DELAY) {
             // Move the servo to the right limit (e.g., +135°)
-            clawServo.setPosition(1.0);
+            clawServo.setPosition(0.9);
             isOpen = true;
         }
 
         lastTime = time.time();
     }
-
-//    public void setPositionWithDeadband(double position) {
-//
-//        if (position >= DEAD_BAND_LEFT && position <= DEAD_BAND_RIGHT) {
-//// to check if the angle or position of the servo lies within the deadband or in
-//// ryans words it is the center slice where the servo is not allowed to move
-//            clawServo.setPosition(position < 0.5 ? LEFT_LIMIT : RIGHT_LIMIT); // Move to the closest limit
-//        } else {
-//            clawServo.setPosition(position);
-//        }
-//    }
 
 
     public boolean getState() {
