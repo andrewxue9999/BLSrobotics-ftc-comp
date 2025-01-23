@@ -1,4 +1,7 @@
 // set points for arm extension
+// stay below 42 inches (pythagorean theorem / trig height)
+// automatically retract when going up to remain within this boundary
+// automatically retract when claw is "activated"
 
 package org.firstinspires.ftc.teamcode.robot.hardware;
 

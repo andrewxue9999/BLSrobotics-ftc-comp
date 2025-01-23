@@ -27,3 +27,7 @@ Pivot:
 
 Claw:
 1. Optimize the set bounds method
+
+Arm:
+1. Look at comments
+2. Inquire further about climb

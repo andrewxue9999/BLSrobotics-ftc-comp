@@ -41,7 +41,7 @@ public class Claw {
             isOpen = false;
             clawServo.setPosition(0);
 
-            // do NOT use TimeUnit.MILLISEOCNDS.sleep(400), as this pauses the entire robot.
+            // do NOT use TimeUnit.MILLISECONDS.sleep(400), as this pauses the entire robot.
         } else if (!isOpen && time.time() > lastTime + TIME_DELAY) {
             // Move the servo to the right limit (e.g., +135°)
             clawServo.setPosition(0.9);
