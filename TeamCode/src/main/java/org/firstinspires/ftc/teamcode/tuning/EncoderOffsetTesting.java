@@ -20,6 +20,7 @@ public class EncoderOffsetTesting extends LinearOpMode {
     private AbsoluteAnalogEncoder efrontLeft;
     private AbsoluteAnalogEncoder ebackLeft;
     private AbsoluteAnalogEncoder ebackRight;
+    private AbsoluteAnalogEncoder pivotEncoder;
 
     double newFrontRightRad;
     double newFrontRightDeg;
@@ -37,10 +38,6 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
         axon = hardwareMap.get(CRServo.class, "sfrontRight");
 
-        efrontRight =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontRight"), 3.3);
-        efrontLeft =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontLeft"), 3.3);
-        ebackLeft =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackLeft"), 3.3);
-        ebackRight=  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackRight"), 3.3);
 
         axon.setPower(0.5);
 
@@ -48,11 +45,20 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
         axon.setPower(0);
 
+        efrontRight =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontRight"), 3.3);
+        efrontLeft =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "efrontLeft"), 3.3);
+        ebackLeft =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackLeft"), 3.3);
+        ebackRight=  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackRight"), 3.3);
+
+        pivotEncoder = new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "poop"), 3.3);
+
         waitForStart();
 
 
 
         while (opModeIsActive()) {
+
+            double pivot = ((pivotEncoder.getVoltage()) / 3.3) * 2 * Math.PI;
 
             newFrontRightRad = ((efrontRight.getVoltage())/3.3) * 2 * Math.PI;
             newFrontRightDeg = ((efrontRight.getVoltage())/3.3) * 360;
@@ -104,6 +110,8 @@ public class EncoderOffsetTesting extends LinearOpMode {
             telemetry.addData("frontLeft", frontLeftV + "rad");
             telemetry.addData("backLeft", backLeftV + "rad");
             telemetry.addData("backRight", backRightV + "rad");
+
+            telemetry.addData("Pivot offset", pivot);
 
             telemetry.update();
         }

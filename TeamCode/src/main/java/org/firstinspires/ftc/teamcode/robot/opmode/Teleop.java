@@ -43,7 +43,7 @@ public class Teleop extends LinearOpMode {
         str = new SlewRateLimiter(str_r);
 
         pivot = new Pivot();
-        pivot.init(hardwareMap, "pivot");
+        pivot.init(hardwareMap, "pivot", "poop");
 
         claw = new Claw();
         claw.init(hardwareMap, "claw");
