@@ -1,80 +1,58 @@
-// gear ratios
-// calculations for limits to not exceed 42 inch horizontal limit
-
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import androidx.annotation.NonNull;
+import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
-import com.arcrobotics.ftclib.controller.PIDFController;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+@Config
+@TeleOp
+public class Pivot extends OpMode {
+    private PIDController controller;
 
-import java.util.Locale;
+    public static double p = 0, i = 0, d = 0;
+    public static double f = 0;
 
-public class Pivot {
-    private DcMotor pivot;
-    private final double GEAR_RATIO = 300;
-    private final double TPR = 28 * GEAR_RATIO; //ticks per rotation
-    private final int topPosTicks = 2333; // temporary zero: extended all the way up (diagonal)
-    private final double bottomPosTicks = -2758;
-    private PIDFController PIDFcontroller;
-    private final double P = 0.2;
-    private final double I = 0.0;
-    private final double D = 0.0;
-    private final double F = 0.2;
-    private double target;
-    private final double ticks_in_degrees = ((50/15) * 28 * 125) / 360;
+    private static double offset = 1.2;
 
-    public void init(@NonNull HardwareMap hardwareMap, String name) {
-       pivot = hardwareMap.get(DcMotor.class, name); // should be "pivot"
+    public static int target = 0;
 
-       pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       pivot.setDirection(DcMotor.Direction.REVERSE);
+    private final double ticks_in_degree = 700/180.0;
 
-       PIDFcontroller = new PIDFController(P, I, D, F);
-       PIDFcontroller.setPIDF(P, I, D, F);
+    private DcMotorEx arm_motor;
+
+    private AnalogInput poop;
+    private AbsoluteAnalogEncoder penc;
+
+    @Override
+    public void init() {
+        poop = hardwareMap.get(AnalogInput.class, "poop");
+        penc = new AbsoluteAnalogEncoder(poop, 3.3);
+        penc.zero(offset);
+        controller = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor0");
     }
 
+    @Override
+    public void loop() {
+        controller.setPID(p, i, d);
+        double armPos = (Math.toDegrees(penc.getCurrentPosition()) * ticks_in_degree);
+        double pid = controller.calculate(armPos, target);
+        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
 
-    public void goTo(String position) {
-        switch (position) {
-            case "scoring":
-                target = topPosTicks;
-                break;
-            case "pickup":
-                target = bottomPosTicks;
-                break;
-            default:
-                target = 0; // "home" position
-        }
+        double power = pid + ff;
 
-        PIDFcontroller.setPIDF(P, I, D, F);
+        arm_motor.setPower(power);
 
-        int currentPos = pivot.getCurrentPosition();
-        double power = PIDFcontroller.calculate(currentPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * F;
-
-        power += ff;
-        pivot.setPower(power);
-    }
-
-
-    // testing/debugging purposes only
-    public void driveUp() {
-        pivot.setPower(0.1);
-    }
-
-    // testing/debugging purposes only
-    public void driveDown() {
-        pivot.setPower(-0.1);
-    }
-
-
-    public String getTelemetry() {
-      return String.format(Locale.ENGLISH, "current pivot position in ticks %d, target: %.2f, power: %.2f", pivot.getCurrentPosition(), target, pivot.getPower());
+        telemetry.addData("pos", armPos);
+        telemetry.addData("target", target);
+        telemetry.update();
     }
 }

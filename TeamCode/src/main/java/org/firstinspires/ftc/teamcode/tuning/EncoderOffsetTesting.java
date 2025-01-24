@@ -12,7 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 @TeleOp(name="Encoder Offset Tester")
 
+
 public class EncoderOffsetTesting extends LinearOpMode {
+
+    private AbsoluteAnalogEncoder poop;
 
     private CRServo axon;
 
@@ -42,6 +45,8 @@ public class EncoderOffsetTesting extends LinearOpMode {
         ebackLeft =  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackLeft"), 3.3);
         ebackRight=  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackRight"), 3.3);
 
+        poop = new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "poop"), 3.3);
+
         axon.setPower(0.5);
 
         TimeUnit.MILLISECONDS.sleep(150);
@@ -50,9 +55,9 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
         waitForStart();
 
-
-
         while (opModeIsActive()) {
+
+            double pivot = ((poop.getVoltage())/3.3) * 2 * Math.PI;
 
             newFrontRightRad = ((efrontRight.getVoltage())/3.3) * 2 * Math.PI;
             newFrontRightDeg = ((efrontRight.getVoltage())/3.3) * 360;
@@ -74,6 +79,8 @@ public class EncoderOffsetTesting extends LinearOpMode {
 
 
             telemetry.addData("You can", "start aligning the left and right wheels with a straightedge!");
+
+            telemetry.addData("Pivot offset", pivot);
 
             telemetry.addData("newFrontRightRad", newFrontRightRad);
             telemetry.addData("newFrontRightDeg", newFrontRightDeg);
