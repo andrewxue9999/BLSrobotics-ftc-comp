@@ -15,9 +15,8 @@ import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
-@TeleOp(name="skibidiTeleop", group="Linear OpMode")
+@TeleOp(name="(use this fr) Teleop", group="Linear OpMode")
 public class Teleop extends LinearOpMode {
-
 
     private ElapsedTime runtime = new ElapsedTime();
     public final double TRACKWIDTH = 12.6378;
@@ -47,7 +46,9 @@ public class Teleop extends LinearOpMode {
 
         claw = new Claw();
         claw.init(hardwareMap, "claw");
-        
+
+        // for auto decoding later: this is where "copying" ends
+
         waitForStart();
         runtime.reset();
 
@@ -69,7 +70,6 @@ public class Teleop extends LinearOpMode {
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
             drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
 
-
             drivetrain.set(new Pose(driveX, driveY, azimuth));
             drivetrain.set(drive);
             drivetrain.write();
@@ -85,7 +85,6 @@ public class Teleop extends LinearOpMode {
                 claw.toggle(runtime);
             }
 
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
@@ -94,7 +93,6 @@ public class Teleop extends LinearOpMode {
             telemetry.update();
         }
     }
-
 
 
     private double angleToServoPosition(double angle) {
