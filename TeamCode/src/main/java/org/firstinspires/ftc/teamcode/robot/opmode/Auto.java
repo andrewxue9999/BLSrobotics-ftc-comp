@@ -8,10 +8,9 @@ import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
-//import com.acmerobotics.roadrunner.Pose2d;
-//import com.acmerobotics.roadrunner.Vector2d;
-//import com.acmerobotics.roadrunner.drive.SwerveDrive;
-
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.drive.SwerveDrive;
 
 @Autonomous(name = "(use this fr) Autonomous")
 public class Auto extends LinearOpMode {

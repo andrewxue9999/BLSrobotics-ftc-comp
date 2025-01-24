@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 import com.acmerobotics.dashboard.config.Config;
 
@@ -92,17 +93,21 @@ public class SwerveModule {
         encoder.setInverted(invert);
     }
 
-    private double getModuleRotation() {
+    public double getModuleRotation() {
         return normalizeRadians(position);
     }
 
-    private double getTargetRotation() {
+    public double getTargetRotation() {
         return target;
     }
 
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
         motor.setPower(power);
+    }
+
+    public void setServoPower(double power) {
+        servo.setPower(power);
     }
 
     public void setTargetRotation(double target) {
@@ -123,5 +128,18 @@ public class SwerveModule {
 
     public String getTelemetry(String name) {
         return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), power, error);
+    }
+
+    public void setMode(DcMotor.RunMode runMode) {
+        motor.setMode(runMode);
+    }
+
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+        motor.setZeroPowerBehavior(zeroPowerBehavior);
+    }
+
+    // yes, I am aware that the below function is effectively useless. -Andrew
+    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients compensatedCoefficients) {
+        scontroller.setPID(P, I, D);
     }
 }
