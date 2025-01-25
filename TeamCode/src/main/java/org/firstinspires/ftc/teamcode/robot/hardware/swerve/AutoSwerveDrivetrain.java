@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.robot.opmode;
+// for autonomous use only
 
-import org.firstinspires.ftc.teamcode.robot.hardware.SwerveModule;
+package org.firstinspires.ftc.teamcode.robot.hardware.swerve;
 
 import com.acmerobotics.roadrunner.drive.SwerveDrive;
 import static org.firstinspires.ftc.teamcode.roadrunner.main.drive.DriveConstants.MAX_ACCEL;
@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.drive.SwerveDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -53,11 +52,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class SampleSwerveDrive extends SwerveDrive {
-
-    /*
-     * Simple mecanum drive hardware implementation for REV hardware.
-     */
+public class AutoSwerveDrivetrain extends SwerveDrive {
 
     public SwerveModule leftFront, leftBack, rightFront, rightBack;
     private DcMotorEx mrightFront;
@@ -117,7 +112,7 @@ public class SampleSwerveDrive extends SwerveDrive {
         @GuardedBy("IMULock")
         private BNO055IMU imu;
 
-        public SampleSwerveDrive(HardwareMap hardwareMap) {
+        public AutoSwerveDrivetrain(HardwareMap hardwareMap) {
             super(kV, kA, kStatic, TRACK_WIDTH);
 
             velocityConstraint = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
@@ -129,34 +124,12 @@ public class SampleSwerveDrive extends SwerveDrive {
             batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
-            // TODO: adjust the names of the following hardware devices to match your configuration
             synchronized (IMULock) {
                 imu = hardwareMap.get(BNO055IMU.class, "imu");
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 imu.initialize(parameters);
             }
-            // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
-            // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
-            //
-            //             | +Z axis
-            //             |
-            //             |
-            //             |
-            //      _______|_____________     +Y axis
-            //     /       |_____________/|__________
-            //    /   REV / EXPANSION   //
-            //   /       / HUB         //
-            //  /_______/_____________//
-            // |_______/_____________|/
-            //        /
-            //       / +X axis
-            //
-            // This diagram is derived from the axes in section 3.4 https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf
-            // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
-            //
-            // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-            // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
             mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
             mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -197,21 +170,12 @@ public class SampleSwerveDrive extends SwerveDrive {
 
             setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            //TODO instantiate hardware
-
 
             if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
                 setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
             }
 
-            // TODO: if desired, use setLocalizer() to change the localization method
-            // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-//            setLocalizer(new BetterSwerveLocalizer(this::getExternalHeading, leftFrontModule, leftRearModule, rightRearModule, rightFrontModule));
-
-            trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
-
-
-
+            trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID); // include extra omitted parameters ? (reference official RR github for TrajectorySequenceRunner)
         }
 
         public void startIMUThread(LinearOpMode opMode) {

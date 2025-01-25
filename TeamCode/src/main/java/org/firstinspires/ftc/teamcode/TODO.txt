@@ -16,10 +16,8 @@ Localization:
 1. Look at logic of this (implement it but for visual localization instead): https://github.com/KookyBotz/PowerPlay/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/drive/localizer
 
 Auto:
-1. Finish SampleSwerveDrive stuff
-2. Set up tuning path files
-3. Integrate into Auto.java
-4. Add instructions for further programming
+1. AutoSwerveDrivetrain.java line 178
+2. Park
 
 Diff Wrist:
 1. https://github.com/ameliorater/ftc-diff-swerve/blob/master/DriveModule.java

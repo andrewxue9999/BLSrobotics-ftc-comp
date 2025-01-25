@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.hardware;
+package org.firstinspires.ftc.teamcode.robot.hardware.swerve;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
@@ -17,8 +17,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.util.Range;
 
 import java.util.Locale;
 

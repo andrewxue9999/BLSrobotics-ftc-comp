@@ -2,15 +2,13 @@ package org.firstinspires.ftc.teamcode.robot.opmode;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
-import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
+import org.firstinspires.ftc.teamcode.robot.hardware.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
