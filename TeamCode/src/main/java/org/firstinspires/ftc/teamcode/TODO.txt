@@ -17,7 +17,7 @@ Localization:
 
 Auto:
 1. AutoSwerveDrivetrain.java line 178
-2. Park
+2. add actual tasks (@Alan's house)
 
 Diff Wrist:
 1. https://github.com/ameliorater/ftc-diff-swerve/blob/master/DriveModule.java
