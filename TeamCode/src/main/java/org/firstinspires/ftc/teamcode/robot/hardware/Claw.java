@@ -58,7 +58,7 @@ public class Claw {
     }
 
     public String getTelemetry() {
-        return String.format("Open %B", isOpen);
+        return String.format("Open %B", this.getState());
     }
 }
 

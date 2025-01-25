@@ -13,8 +13,8 @@ public class DifferentialWrist {
     private Servo leftWrist;
     private Servo rightWrist;
 
-    private final double intakePos = 0;
-    private final double scoringPos = 0.5;
+    private final double intakePos = 0.1;
+    private final double scoringPos = 0.9;
     private final double dropPos = 1.0;
     private final double hangPos = 0.3;
 

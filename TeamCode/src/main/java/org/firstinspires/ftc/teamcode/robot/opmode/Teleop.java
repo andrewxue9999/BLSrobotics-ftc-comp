@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.robot.opmode;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.robot.hardware.DifferentialWrist;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.Point;
@@ -30,8 +33,11 @@ public class Teleop extends LinearOpMode {
     public Pivot pivot;
     private Claw claw;
 
+    public DifferentialWrist wrist;
+
     @Override
     public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -47,10 +53,15 @@ public class Teleop extends LinearOpMode {
         claw = new Claw();
         claw.init(hardwareMap, "claw");
 
+        wrist = new DifferentialWrist();
+        wrist.init(hardwareMap, "leftWrist", "rightWrist");
+
         // for auto decoding later: this is where "copying" ends
 
         waitForStart();
         runtime.reset();
+
+        boolean g2Dup = false;
 
         while (opModeIsActive()) {
 
@@ -65,6 +76,9 @@ public class Teleop extends LinearOpMode {
 
             drivetrain.read();
 
+            telemetry.addData("pos", pivot.pivotCurrentPos);
+            telemetry.addData("target", pivot.pivotTarget);
+
             drivetrain.maintainHeading = Math.abs(driveY) < 0.002 && Math.abs(driveX) < 0.002 && Math.abs(azimuth) < 0.002;
 
             Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
@@ -74,14 +88,30 @@ public class Teleop extends LinearOpMode {
             drivetrain.set(drive);
             drivetrain.write();
             drivetrain.getTelemetry();
+//
+//            pivot.leoeo();
 
-            if (gamepad1.dpad_up) {
-                pivot.goTo("scoring", "retract"); // "retract" is just for testing
-            } else if (gamepad1.dpad_down) {
-                pivot.goTo("pickup", "retract");
-            }
+//            pivot.goTo("scoring", "highBucket");
 
-            if (gamepad1.a) {
+//            pivot.goTo("scoring", "highBucket");
+
+//            if (gamepad2.dpad_up || g2Dup) {
+//                g2Dup = true;
+//                wrist.goToPos("score");
+//            } else if (gamepad2.dpad_down) {
+  //                pivot.goTo("pickup", "pickup");
+//                wrist.goToPos("intake");
+//                while (gamepad2.left_bumper) {
+//                    pivot.manualExtend(-10);
+//                }
+//                while (gamepad2.right_bumper) {
+//                    pivot.manualExtend(10);
+//                }
+//            } else if (gamepad1.dpad_left) {
+//                pivot.goTo("scoring", "lowBucket");
+//                wrist.goToPos("score");
+//            }
+            if (gamepad2.a) {
                 claw.toggle(runtime);
             }
 
@@ -89,7 +119,9 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
             telemetry.addData("Drivetrains", drivetrain.getTelemetry());
-//            telemetry.addData("Pivot position", pivot.getTelemetry());
+            telemetry.addData("Pivot info", pivot.getTelemetry());
+            telemetry.addData("Claw info", claw.getTelemetry());
+
             telemetry.update();
         }
     }
