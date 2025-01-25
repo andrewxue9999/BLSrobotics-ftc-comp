@@ -13,8 +13,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import org.firstinspires.ftc.teamcode.roadrunner.main.trajectorysequence.TrajectorySequence;
 
-@Autonomous(name = "(use this fr) Autonomous (that actually does something)")
-public class Auto extends LinearOpMode {
+@Autonomous(name = "(use this fr) Autonomous (but we're useless af)")
+public class AutoUseless extends LinearOpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
     public final double TRACKWIDTH = 12.6378;
     public final double WHEELBASE = 12.6378;
@@ -30,7 +31,6 @@ public class Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         drivetrain = new AutoSwerveDrivetrain(hardwareMap);
 
         fw = new SlewRateLimiter(fw_r);
@@ -50,8 +50,7 @@ public class Auto extends LinearOpMode {
                 .setVelConstraint(AutoSwerveDrivetrain.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)) // so it doesn't just go too fast
 //                .lineToConstantHeading(new Vector2d(5, 0)) // random location
                 .setVelConstraint(AutoSwerveDrivetrain.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
-                .waitSeconds(0.25)
-                .strafeRight(60)
+                .waitSeconds(25)
                 .build();
 
         waitForStart();
