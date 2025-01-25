@@ -21,6 +21,7 @@ public class Claw {
     private final double CENTER_LEFT = 0.2; // Corresponds to -20°
     private final double CENTER_RIGHT = 0.8; // Corresponds to +20°
 
+
     private final double HOME_POINT = 0.5;
 
     public void init(@NonNull HardwareMap hardwareMap, String name) {
@@ -36,15 +37,15 @@ public class Claw {
 
     public void toggle(ElapsedTime time) {
         if (isOpen && time.time() > lastTime + TIME_DELAY) {
-            // Move the servo to the left limit (e.g., -135°)
+            // Move the servo to the right limit (e.g., -135°)
 
             isOpen = false;
-            clawServo.setPosition(0);
+            clawServo.setPosition(0.6);
 
             // do NOT use TimeUnit.MILLISECONDS.sleep(400), as this pauses the entire robot.
         } else if (!isOpen && time.time() > lastTime + TIME_DELAY) {
-            // Move the servo to the right limit (e.g., +135°)
-            clawServo.setPosition(0.9);
+            // Move the servo to the center (e.g., +135°)
+            clawServo.setPosition(0.4);
             isOpen = true;
         }
 

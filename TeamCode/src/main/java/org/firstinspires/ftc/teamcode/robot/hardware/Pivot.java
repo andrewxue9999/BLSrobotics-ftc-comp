@@ -17,63 +17,119 @@ import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import java.util.Locale;
 
 public class Pivot {
+
+    // Pivot
     private AnalogInput pivotReading;
     private AbsoluteAnalogEncoder pivotEncoder;
     private DcMotor pivot;
     private final double GEAR_RATIO = 300;
     private final double TPR = 28 * GEAR_RATIO; //ticks per rotation
-    private final int topPosTicks = 2333; // temporary zero: extended all the way up (diagonal)
-    private final double bottomPosTicks = -2758;
-    private PIDFController PIDFcontroller;
-    private final double P = 0.2;
-    private final double I = 0.0;
-    private final double D = 0.0;
-    private final double F = 0.2;
+    private final int pivotTopPosTicks = 2333; // temporary zero: extended all the way up (diagonal)
+    private final int pivotBottomPosTicks = -2758;
+    private PIDFController pivotPIDFcontroller;
+    private final double pivotP = 0.2;
+    private final double pivotI = 0.0;
+    private final double pivotD = 0.0;
+    private final double pivotF = 0.2;
     private static final double ENCODER_OFFSET = 1.2;
-    private double currentPos;
-    private double target;
+    private double pivotCurrentPos;
+    private double pivotTarget;
     private final double TICKS_IN_DEGREES = 700.0 / 180;
 
-    public void init(@NonNull HardwareMap hardwareMap, String pivotName, String analogInputName) {
-       pivot = hardwareMap.get(DcMotor.class, pivotName); // should be "pivot" or "arm_motor0" ?
+    // Telescoping extendo thingy
 
-       pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       pivot.setDirection(DcMotor.Direction.REVERSE);
+    private final int extendoRetractedPosTicks = 0; // temporary zero: extended all the way up (diagonal)
+    private final int extendoHighBucketPosTicks = 0;
+    private final int extendoLowBucketPosTicks = 0;
+    private final int extendoHighChamberPosTicks = 0;
+    private final int extendoLowChamberPosTicks = 0;
+    private final int extendoIntakePosTicks = 0;
+    private DcMotor extendo;
+    private PIDFController extendoPIDFcontroller;
+    private final double extendoP = 0.0;
+    private final double extendoI = 0.0;
+    private final double extendoD = 0.0;
+    private final double extendoF = 0.0;
+    private double extendoCurrentPos;
+    private double extendoTarget;
 
-       PIDFcontroller = new PIDFController(P, I, D, F);
-       PIDFcontroller.setPIDF(P, I, D, F);
+    public void init(@NonNull HardwareMap hardwareMap, String pivotName, String analogInputName, String extendoName) {
+        pivot = hardwareMap.get(DcMotor.class, pivotName); // should be "pivot" or "arm_motor0" ?
+        extendo = hardwareMap.get(DcMotor.class, extendoName); // DEFINE THE NAME IN HARDWARE MAP
 
-       pivotReading = hardwareMap.get(AnalogInput.class, analogInputName);
-       pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3);
-       pivotEncoder.zero(ENCODER_OFFSET);
+        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pivot.setDirection(DcMotor.Direction.REVERSE);
+
+        // Prolly should change this, I' just going off of what i think would work - victor
+        extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        pivotPIDFcontroller = new PIDFController(pivotP, pivotI, pivotD, pivotF);
+        pivotPIDFcontroller.setPIDF(pivotP, pivotI, pivotD, pivotF);
+
+        extendoPIDFcontroller = new PIDFController(extendoP, extendoI, extendoD, extendoF);
+        extendoPIDFcontroller.setPIDF(extendoP, extendoI, extendoD, extendoF);
+
+        pivotReading = hardwareMap.get(AnalogInput.class, analogInputName);
+        pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3);
+        pivotEncoder.zero(ENCODER_OFFSET);
 
     }
 
 
-    public void goTo(String position) {
-        switch (position) {
+    public void goTo(String pivotPosition, String extendoPosition) {
+        switch (pivotPosition) {
             case "scoring":
-                target = topPosTicks;
+                pivotTarget = pivotTopPosTicks;
                 break;
             case "pickup":
-                target = bottomPosTicks;
+                pivotTarget = pivotBottomPosTicks;
                 break;
             default:
-                target = 0; // "home" position
+                pivotTarget = 0; // "home" position
         }
 
-        currentPos = Math.toDegrees(pivotEncoder.getCurrentPosition()) * TICKS_IN_DEGREES;
+        switch (extendoPosition) {
+            case "retract":
+                extendoTarget = extendoRetractedPosTicks;
+                break;
+            case "highBucket":
+                extendoTarget = extendoHighBucketPosTicks;
+                break;
+            case "lowBucket":
+                extendoTarget = extendoLowBucketPosTicks;
+                break;
+            case "highChamber":
+                extendoTarget = extendoHighChamberPosTicks;
+                break;
+            case "lowChamber":
+                extendoTarget = extendoLowChamberPosTicks;
+                break;
+            case "intake":
+                extendoTarget = extendoIntakePosTicks;
+                break;
+        }
 
-        PIDFcontroller.setPIDF(P, I, D, F);
+        pivotCurrentPos = Math.toDegrees(pivotEncoder.getCurrentPosition()) * TICKS_IN_DEGREES;
 
-        int currentPos = pivot.getCurrentPosition();
-        double power = PIDFcontroller.calculate(currentPos, target);
-        double ff = Math.cos(Math.toRadians(target / TICKS_IN_DEGREES)) * F;
+        pivotPIDFcontroller.setPIDF(pivotP, pivotI, pivotD, pivotF);
+        extendoPIDFcontroller.setPIDF(extendoP, extendoI, extendoD, extendoF);
 
-        power += ff;
-        pivot.setPower(power);
+        pivotCurrentPos = pivot.getCurrentPosition(); // This is before the absolute encoder
+        double pivotPower = pivotPIDFcontroller.calculate(pivotCurrentPos, pivotTarget);
+        double pivotff = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
+
+        double extendoPower = extendoPIDFcontroller.calculate(extendoCurrentPos, extendoTarget);
+        double extendoff = Math.cos(Math.toRadians(extendoTarget / TICKS_IN_DEGREES)) * extendoF;
+
+        pivotPower += pivotff;
+        pivot.setPower(pivotPower);
+
+        extendoPower += extendoff;
+        extendo.setPower(extendoPower);
     }
 
 
@@ -89,6 +145,15 @@ public class Pivot {
 
 
     public String getTelemetry() {
-      return String.format(Locale.ENGLISH, "current pivot position in ticks %d, current pivot position in degrees %.2f, target: %.2f, power: %.2f", pivot.getCurrentPosition(), currentPos, target, pivot.getPower());
+      return String.format(Locale.ENGLISH, "current pivot position in ticks %d, current pivot position in degrees %.2f, target: %.2f, power: %.2f. current extendo position in ticks %d, in degrees %.2f, target: %.2f, power %.2f",
+              pivot.getCurrentPosition(),
+              pivotCurrentPos,
+              pivotTarget,
+              pivot.getPower(),
+              extendo.getCurrentPosition(),
+              extendoCurrentPos,
+              extendoTarget,
+              extendo.getPower()
+      );
     }
 }
