@@ -23,6 +23,9 @@ Diff Wrist:
 1. https://github.com/ameliorater/ftc-diff-swerve/blob/master/DriveModule.java
 2. ^ includes their distance traveled methodology
 
+Pivot:
+1. review latest git update
+
 Claw:
 1. Optimize the set bounds method
 
