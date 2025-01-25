@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot.opmode;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -109,6 +108,4 @@ public class Teleop extends LinearOpMode {
                         Math.pow(Math.abs(n), Math.log(l / a) / Math.log(l)) * Math.signum(n) :
                         n / a);
     }
-
 }
-
