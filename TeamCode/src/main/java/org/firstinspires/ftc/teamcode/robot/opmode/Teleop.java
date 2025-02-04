@@ -42,7 +42,7 @@ public class Teleop extends LinearOpMode {
         str = new SlewRateLimiter(str_r);
 
         pivot = new Pivot();
-        pivot.init(hardwareMap, "pivot", "poop", "extendo");
+        pivot.init(hardwareMap, "pivot", "poop", "extendo", gamepad2);
 
         claw = new Claw();
         claw.init(hardwareMap, "claw");
@@ -75,11 +75,7 @@ public class Teleop extends LinearOpMode {
             drivetrain.write();
             drivetrain.getTelemetry();
 
-            if (gamepad1.dpad_up) {
-                pivot.goTo("scoring", "retract"); // "retract" is just for testing
-            } else if (gamepad1.dpad_down) {
-                pivot.goTo("pickup", "retract");
-            }
+            pivot.goTo();
 
             if (gamepad1.a) {
                 claw.toggle(runtime);

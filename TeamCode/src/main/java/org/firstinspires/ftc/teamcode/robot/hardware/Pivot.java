@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -36,7 +37,7 @@ public class Pivot {
 
     public static int superBaseTicks = -973;
     public static int startIngConfig = -526;
-    public static int pivotTopPosTicks = 18; // temporary zero: extended all the way up (diagonal)
+    public static int pivotBucketPosTicks = 18; // temporary zero: extended all the way up (diagonal)
     public static int pivotBottomPosTicks = -847;
     private PIDController pivotPIDcontroller;
     public static double pivotP = 0.01;
@@ -68,7 +69,9 @@ public class Pivot {
     private double extendoCurrentPos;
     private double extendoTarget;
 
-    public void init(@NonNull HardwareMap hardwareMap, String pivotName, String analogInputName, String extendoName) {
+    private Gamepad gp2;
+
+    public void init(@NonNull HardwareMap hardwareMap, String pivotName, String analogInputName, String extendoName, Gamepad gamepad) {
         pivot = hardwareMap.get(DcMotor.class, pivotName); // should be "pivot" or "arm_motor0" ?
         extendo = hardwareMap.get(DcMotor.class, extendoName); // DEFINE THE NAME IN HARDWARE MAP
 
@@ -87,19 +90,46 @@ public class Pivot {
         pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3);
         pivotEncoder.zero(ENCODER_OFFSET);
 
+        gp2 = gamepad;
+
     }
 
 //    public void leoeo () {
 //        pivotCurrentPos = pivot.getCurrentPosition();
 //    }
-    public void goTo(String pivotPosition, String extendoPosition) {
+    public void goTo() {
+
+        String pivotPosition = "";
+        String extendoPosition = "";
+
+        boolean up = gp2.dpad_up;
+        boolean down = gp2.dpad_down;
+        boolean right = gp2.dpad_right;
+        boolean left = gp2.dpad_left;
+
+        boolean intakeLong = gp2.right_bumper;
+        boolean intakeShort = gp2.left_bumper;
+
+        if (up) {
+            pivotPosition = "sccoring";
+            extendoPosition = "high";
+        } else if (down) {
+            pivotPosition = "intake";
+            extendoPosition = "intake";
+        } else if (right) {
+            pivotPosition = "scoring";
+            extendoPosition = "low";
+        }
 
         switch (pivotPosition) {
             case "scoring":
-                pivotTarget = pivotTopPosTicks;
+                pivotTarget = pivotBucketPosTicks;
                 break;
-            case "pickup":
+            case "intake":
                 pivotTarget = pivotBottomPosTicks;
+                break;
+            case "low":
+                pivotTarget = pivotBucketPosTicks;
                 break;
             case "starting":
                 pivotTarget = startIngConfig;
@@ -112,10 +142,10 @@ public class Pivot {
             case "retract":
                 extendoTarget = extendoRetractedPosTicks;
                 break;
-            case "highBucket":
+            case "high":
                 extendoTarget = extendoHighBucketPosTicks;
                 break;
-            case "lowBucket":
+            case "low":
                 extendoTarget = extendoLowBucketPosTicks;
                 break;
             case "highChamber":
@@ -127,19 +157,15 @@ public class Pivot {
             case "intake":
                 extendoTarget = extendoIntakePosTicks;
                 break;
-            case "pickup":
-                extendoTarget = extendoPickupPosTicks;
         }
 
         pivotPIDcontroller.setPID(pivotP, pivotI, pivotD);
+        pivotCurrentPos = pivot.getCurrentPosition();
+        double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
+        double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
+        pivotPower = pivotPid + pivotFeedF;
+        pivot.setPower(pivotPower);
 
-        while (pivot.getCurrentPosition() > (pivotTarget + 10) || pivot.getCurrentPosition() < (pivotTarget - 10)) {
-            pivotCurrentPos = pivot.getCurrentPosition();
-            double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
-            double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
-            pivotPower = pivotPid + pivotFeedF;
-            pivot.setPower(pivotPower);
-        }
 
 
 
