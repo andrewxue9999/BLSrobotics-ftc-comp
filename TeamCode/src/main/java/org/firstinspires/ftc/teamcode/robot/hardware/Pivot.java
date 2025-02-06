@@ -35,7 +35,7 @@ public class Pivot {
     private final double GEAR_RATIO = 3.61 * 3.61 * 5.23 * 1.6;
     private final double TPR = 28 * GEAR_RATIO; //ticks per rotation
 
-    public static int superBaseTicks = -973;
+    public static double superBasePos = -973;
     public static int startIngConfig = -526;
     public static int pivotBucketPosTicks = 18; // temporary zero: extended all the way up (diagonal)
     public static int pivotBottomPosTicks = -847;
@@ -44,7 +44,7 @@ public class Pivot {
     public static double pivotI = 0.0;
     public static double pivotD = 0.0001;
     public static double pivotF = 0.4;
-    private static final double ENCODER_OFFSET = 0.3161;
+    private static final double ENCODER_OFFSET = 0.3027;
     public double pivotCurrentPos;
     public double pivotTarget;
 
@@ -91,6 +91,7 @@ public class Pivot {
         pivotEncoder.zero(ENCODER_OFFSET);
 
         gp2 = gamepad;
+//        pivotCurrentPos = 0.0;
 
     }
 
@@ -160,20 +161,18 @@ public class Pivot {
         }
 
         pivotPIDcontroller.setPID(pivotP, pivotI, pivotD);
-        pivotCurrentPos = pivot.getCurrentPosition();
+        pivotCurrentPos = pivotEncoder.getCurrentPosition();
         double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
         double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
         pivotPower = pivotPid + pivotFeedF;
-        pivot.setPower(pivotPower);
+//        pivot.setPower(pivotPower);
+
+    }
 
 
-
-
-
-
-
-
-
+    public int posToTick(double pos)
+    {
+        return (int) (pos * TPR);
     }
 
     public void manualExtend(int increment) {
@@ -182,16 +181,6 @@ public class Pivot {
 
 
     // testing/debugging purposes only
-    public void driveUp() {
-        pivot.setPower(0.1);
-    }
-
-    // testing/debugging purposes only
-    public void driveDown() {
-        pivot.setPower(-0.1);
-    }
-
-
     public String getTelemetry() {
       return String.format(Locale.ENGLISH, "current motor pivot position in ticks %d, current pivot position converted to ticks from absEnc %.2f, target: %.2f, power: %.2f. current extendo position in ticks %d, in degrees %.2f, target: %.2f, power %.2f",
               pivot.getCurrentPosition(),
