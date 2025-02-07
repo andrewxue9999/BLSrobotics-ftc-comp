@@ -112,7 +112,7 @@ public class Pivot {
         boolean intakeShort = gp2.left_bumper;
 
         if (up) {
-            pivotPosition = "sccoring";
+            pivotPosition = "scoring";
             extendoPosition = "high";
         } else if (down) {
             pivotPosition = "intake";
@@ -165,7 +165,7 @@ public class Pivot {
         double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
         double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
         pivotPower = pivotPid + pivotFeedF;
-//        pivot.setPower(pivotPower);
+        pivot.setPower(pivotPower);
 
     }
 
