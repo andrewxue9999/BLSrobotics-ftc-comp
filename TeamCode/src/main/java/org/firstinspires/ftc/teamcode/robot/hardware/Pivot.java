@@ -54,8 +54,8 @@ public class Pivot {
     // Telescoping extendo thingy
 
     private final int extendoRetractedPosTicks = 0; // temporary zero: extended all the way up (diagonal)
-    private final int extendoHighBucketPosTicks = 0;
-    private final int extendoLowBucketPosTicks = 0;
+    private final int extendoHighBucketPosTicks = -188;
+    private final int extendoLowBucketPosTicks = -150;
     private final int extendoHighChamberPosTicks = 0;
     private final int extendoLowChamberPosTicks = 0;
     private final int extendoIntakePosTicks = 0;
@@ -86,6 +86,11 @@ public class Pivot {
         extendoPIDFcontroller = new PIDFController(extendoP, extendoI, extendoD, extendoF);
         extendoPIDFcontroller.setPIDF(extendoP, extendoI, extendoD, extendoF);
 
+        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        pivot.setDirection(DcMotor.Direction.REVERSE);
+
         pivotReading = hardwareMap.get(AnalogInput.class, analogInputName);
         pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3);
         pivotEncoder.zero(ENCODER_OFFSET);
@@ -98,18 +103,20 @@ public class Pivot {
 //    public void leoeo () {
 //        pivotCurrentPos = pivot.getCurrentPosition();
 //    }
-    public void goTo() {
+    public void goTo(boolean up, boolean down, boolean right) {
 
         String pivotPosition = "";
         String extendoPosition = "";
 
-        boolean up = gp2.dpad_up;
-        boolean down = gp2.dpad_down;
-        boolean right = gp2.dpad_right;
-        boolean left = gp2.dpad_left;
 
-        boolean intakeLong = gp2.right_bumper;
-        boolean intakeShort = gp2.left_bumper;
+        // gamepad2 or gamepad1?
+//        boolean up = gp2.dpad_up;
+//        boolean down = gp2.dpad_down;
+//        boolean right = gp2.dpad_right;
+//        boolean left = gp2.dpad_left;
+
+//        boolean intakeLong = gp2.right_bumper;
+//        boolean intakeShort = gp2.left_bumper;
 
         if (up) {
             pivotPosition = "scoring";

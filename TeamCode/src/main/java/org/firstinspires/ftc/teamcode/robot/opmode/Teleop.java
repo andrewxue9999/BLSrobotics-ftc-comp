@@ -77,7 +77,21 @@ public class Teleop extends LinearOpMode {
             drivetrain.set(drive);
             drivetrain.write();
 
-            pivot.goTo();
+
+            if (gamepad1.dpad_up) { // could be 100% optimized a lot but I'm too tired rn and just doing the easiest solution
+                pivot.goTo(true, false, false);
+            } else if (gamepad1.dpad_down) {
+                pivot.goTo(false, true, false);
+
+                while (gamepad1.left_bumper) {
+                    pivot.manualExtend(-10);
+                }
+                while (gamepad1.right_bumper) {
+                    pivot.manualExtend(10);
+                }
+            } else if (gamepad1.dpad_right) {
+                pivot.goTo(false, false, true);
+            }
 
             if (gamepad1.a) {
                 claw.toggle(runtime);
