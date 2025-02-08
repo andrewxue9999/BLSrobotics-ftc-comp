@@ -124,12 +124,12 @@ public class AutoSwerveDrivetrain extends SwerveDrive {
             batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
-            synchronized (IMULock) {
-                imu = hardwareMap.get(BNO055IMU.class, "imu");
-                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-                imu.initialize(parameters);
-            }
+//            synchronized (IMULock) {
+//                imu = hardwareMap.get(BNO055IMU.class, "imu");
+//                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+//                imu.initialize(parameters);
+//            }
 
             mleftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
             mleftBack = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -178,17 +178,17 @@ public class AutoSwerveDrivetrain extends SwerveDrive {
             trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID); // include extra omitted parameters ? (reference official RR github for TrajectorySequenceRunner)
         }
 
-        public void startIMUThread(LinearOpMode opMode) {
-            imuThread = new Thread(() -> {
-                while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
-                    synchronized (IMULock) {
-                        imuAngle = imu.getAngularOrientation().firstAngle;
-                        imuAngleVelocity = -imu.getAngularVelocity().xRotationRate;
-                    }
-                }
-            });
-            imuThread.start();
-        }
+//        public void startIMUThread(LinearOpMode opMode) {
+//            imuThread = new Thread(() -> {
+//                while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
+//                    synchronized (IMULock) {
+//                        imuAngle = imu.getAngularOrientation().firstAngle;
+//                        imuAngleVelocity = -imu.getAngularVelocity().xRotationRate;
+//                    }
+//                }
+//            });
+//            imuThread.start();
+//        }
 
         public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
             return new TrajectoryBuilder(startPose, velocityConstraint, accelConstraint);

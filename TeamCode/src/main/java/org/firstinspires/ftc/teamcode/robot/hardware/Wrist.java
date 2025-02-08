@@ -9,11 +9,13 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.Locale;
+
 public class Wrist {
     private Servo leftWrist;
     private Servo rightWrist;
     private Servo centralServo;
-    private final double intakePos = 0.1;
+    private final double intakePos = 0.44;
     private final double scoringPos = 0.9;
     private final double dropPos = 1.0;
     private final double hangPos = 0.3;
@@ -66,6 +68,6 @@ public class Wrist {
     }
 
     public String getTelemetry() {
-        return String.format("Position: %S", currentPos);
+        return String.format(Locale.ENGLISH, "Position: %S, left wrist position: %.2f, right wrist position: %.2f, central servo position: %.2f", currentPos, leftWrist.getPosition(), rightWrist.getPosition(), centralServo.getPosition());
     }
 }

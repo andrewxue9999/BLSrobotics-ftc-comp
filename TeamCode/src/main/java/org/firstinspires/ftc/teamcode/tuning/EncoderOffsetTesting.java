@@ -110,6 +110,7 @@ public class EncoderOffsetTesting extends LinearOpMode {
             telemetry.addData("frontLeft", frontLeftV + "rad");
             telemetry.addData("backLeft", backLeftV + "rad");
             telemetry.addData("backRight", backRightV + "rad");
+            telemetry.addData("pivot other", pivotEncoder.getCurrentPosition() + "rad");
 
             telemetry.addData("Pivot offset", pivot);
 

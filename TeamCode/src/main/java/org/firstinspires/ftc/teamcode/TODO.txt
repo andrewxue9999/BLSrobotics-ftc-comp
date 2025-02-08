@@ -33,7 +33,4 @@ Arm:
 
 
 ------
-1. pivot setpoints (radians to ticks)
-2. extension setpoints
-3. wrist
 4. climb
