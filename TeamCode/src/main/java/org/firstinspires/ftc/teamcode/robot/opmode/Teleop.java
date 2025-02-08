@@ -3,20 +3,30 @@ package org.firstinspires.ftc.teamcode.robot.opmode;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.swerve.SwerveDrivetrain;
+import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
+
+@Config
 @TeleOp(name="(use this fr) Teleop", group="Linear OpMode")
 public class Teleop extends LinearOpMode {
 
@@ -29,8 +39,27 @@ public class Teleop extends LinearOpMode {
     public static double fw_r = 4;
     public static double str_r = 4;
     public SwerveDrivetrain drivetrain;
-    public Pivot pivot;
+//    public Pivot pivot;
     private Claw claw;
+
+    private DcMotorEx pivot;
+    private AnalogInput pivotAnalog;
+    private AbsoluteAnalogEncoder pivotEnc;
+
+    private PIDController pivotPid;
+
+    /* limits 5.83 to 1.62 */
+    public static double pivotTarget = 0.0;
+
+    public static double dP = 0.0;
+    public static double dI = 0.0;
+    public static double dD = 0.0;
+    public static double F = 0.0;
+    private final double GEAR_RATIO = 3.61 * 3.61 * 5.23 * 1.6;
+    private final double TPR = 28 * GEAR_RATIO;
+
+
+
 
     @Override
     public void runOpMode() {
@@ -44,8 +73,16 @@ public class Teleop extends LinearOpMode {
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
 
-        pivot = new Pivot();
-        pivot.init(hardwareMap, "pivot", "poop", "extendo", gamepad2);
+//        pivot = new Pivot();
+//        pivot.init(hardwareMap, "pivot", "poop", "extendo", gamepad2);
+
+        pivot = hardwareMap.get(DcMotorEx.class, "pivot");
+
+        pivotAnalog = hardwareMap.get(AnalogInput.class, "poop");
+
+        pivotEnc = new AbsoluteAnalogEncoder(pivotAnalog, 3.3);
+
+        pivotPid = new PIDController(dP, dI, dD);
 
         claw = new Claw();
         claw.init(hardwareMap, "claw");
@@ -78,7 +115,15 @@ public class Teleop extends LinearOpMode {
             drivetrain.write();
             drivetrain.getTelemetry();
 
-            pivot.goTo();
+            pivotPid.setPID(dP, dI, dD);
+
+
+            double pidPower = pivotPid.calculate(pivotEnc.getCurrentPosition() * TPR, pivotTarget * TPR);
+            double ff = Math.cos(pivotEnc.getCurrentPosition()) * F;
+            double power = pidPower + ff;
+            pivot.setPower(power);
+
+//            pivot.goTo();
 
             if (gamepad1.a) {
                 claw.toggle(runtime);
@@ -88,7 +133,11 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
             telemetry.addData("Drivetrains", drivetrain.getTelemetry());
-            telemetry.addData("Pivot", pivot.getTelemetry());
+            telemetry.addData("pos", pivotEnc.getCurrentPosition());
+            telemetry.addData("target", pivotTarget);
+            telemetry.addData("PidPower", pidPower);
+            telemetry.addData("power", power);
+//            telemetry.addData("Pivot", pivot.getTelemetry());
             telemetry.update();
         }
     }
