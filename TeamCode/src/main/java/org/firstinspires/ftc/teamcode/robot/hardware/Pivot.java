@@ -88,7 +88,7 @@ public class Pivot {
 
         pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        pivot.setDirection(DcMotor.Direction.REVERSE);
 
         pivotReading = hardwareMap.get(AnalogInput.class, analogInputName);
@@ -170,7 +170,6 @@ public class Pivot {
         }
 
         if (activated) {
-
 //            pivotPIDcontroller.setSetPoint(pivotTarget);
 
             //while (!pivotPIDcontroller.atSetPoint()) {
