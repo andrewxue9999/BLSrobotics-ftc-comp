@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.robot.opmode;
 
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.roadrunner.main.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadrunner.main.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
+import org.firstinspires.ftc.teamcode.robot.hardware.swerve.AutoSwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.robot.hardware.swerve.SwerveDrivetrain;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -23,18 +27,17 @@ public class Auto extends LinearOpMode {
     private SlewRateLimiter str;
     public static double fw_r = 4;
     public static double str_r = 4;
-    public SwerveDrivetrain drivetrain;
+    public AutoSwerveDrivetrain drivetrain;
     public Pivot pivot;
     private Claw claw;
 
     @Override
     public void runOpMode() {
 
-        drivetrain = new SwerveDrivetrain();
-        drivetrain.init(hardwareMap);
+        drivetrain = new AutoSwerveDrivetrain(hardwareMap);
 
-        fw = new SlewRateLimiter(fw_r);
-        str = new SlewRateLimiter(str_r);
+//        fw = new SlewRateLimiter(fw_r);
+//        str = new SlewRateLimiter(str_r);
 
         pivot = new Pivot();
         pivot.init(hardwareMap, "pivot", "poop", "extendo", gamepad2);
@@ -48,16 +51,44 @@ public class Auto extends LinearOpMode {
         Pose2d start_blue_left = new Pose2d(-36, 63, Math.toRadians(180));
 
 
-//
-//        drive.setPoseEstimate(redStart2);
-//
-//
-//        TrajectorySequence test = drive.trajectorySequenceBuilder(redStart2)
+        drivetrain.setPoseEstimate(start_red_right);
+
+        // four sample auto:
+
+        // go from spawn
+        TrajectorySequence goFromSpawn = drivetrain.trajectorySequenceBuilder(start_red_right)
+                .setVelConstraint(AutoSwerveDrivetrain.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+
+                // go to the location to place starting sample:
+                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(0)), Math.toRadians(225))
+
+                .build();
+
+        // move TOWARDS sample pick up
+        TrajectorySequence goToPickUp = drivetrain.trajectorySequenceBuilder(start_red_right)
+                // pick up sample:
+                .splineToLinearHeading(new Pose2d(-63, -48, Math.toRadians(225)), Math.toRadians(0))
+                .build();
+                // insert vision detect code
+
+                // insert pivot intake code
+
+        // move FROM sample pick up TOWARDS sample drop off
+        TrajectorySequence goToDropOff = drivetrain.trajectorySequenceBuilder(start_red_right)
+                // go to the location to place sample:
+                .splineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(0)), Math.toRadians(225))
+                .build();
+
+        // necessary due to my limited understanding of RoadRunner
+        TrajectorySequence waitTime = drivetrain.trajectorySequenceBuilder(start_red_right)
+                .waitSeconds(0.5)
+                .build();
+
+
+
 //                // detect y-axis custom object from starting location
-//                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH)) // so it doesn't just go too fast
 //                .lineToConstantHeading(desiredMark) // place white pixel on mark
 //                .waitSeconds(0.25)
-//                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
 //
 //                .lineToLinearHeading(new Pose2d(35,-57, Math.toRadians(0))) // start moving towards backboard for yellow pixel
 //                .addDisplacementMarker(() -> {
@@ -120,7 +151,11 @@ public class Auto extends LinearOpMode {
         waitForStart();
 //
         if (isStopRequested()) return;
-//
-//        drive.followTrajectorySequence(test);
+
+        drivetrain.followTrajectorySequence(goFromSpawn);
+        pivot.goTo(true, false, false);
+        drivetrain.followTrajectorySequence(goToPickUp);
+
+
     }
 }

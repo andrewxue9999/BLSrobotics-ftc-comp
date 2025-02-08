@@ -25,9 +25,6 @@ import java.util.Locale;
 
 @Config
 public class Pivot {
-
-    Telemetry telemetry;
-
     // Pivot
     private AnalogInput pivotReading;
     private AbsoluteAnalogEncoder pivotEncoder;
@@ -35,20 +32,20 @@ public class Pivot {
     private final double GEAR_RATIO = 3.61 * 3.61 * 5.23 * 1.6;
     private final double TPR = 28 * GEAR_RATIO; //ticks per rotation
 
-    public static double superBasePos = -973;
-    public static int startIngConfig = -526;
-    public static int pivotBucketPosTicks = 18; // temporary zero: extended all the way up (diagonal)
-    public static int pivotBottomPosTicks = -847;
+    private static double superBasePos = -973;
+    private static int startIngConfig = -526;
+    private static int pivotBucketPosTicks = 18; // temporary zero: extended all the way up (diagonal)
+    private static int pivotBottomPosTicks = -847;
     private PIDController pivotPIDcontroller;
-    public static double pivotP = 0.01;
-    public static double pivotI = 0.0;
-    public static double pivotD = 0.0001;
-    public static double pivotF = 0.4;
-    private static final double ENCODER_OFFSET = 0.3027;
-    public double pivotCurrentPos;
-    public double pivotTarget;
+    private static double pivotP = 0.01;
+    private static double pivotI = 0.0;
+    private static double pivotD = 0.0001;
+    private static double pivotF = 0.4;
+    private static final double ENCODER_OFFSET = 0.2323;
+    private double pivotCurrentPos;
+    private double pivotTarget;
 
-    public double pivotPower;
+    private double pivotPower;
     private final double TICKS_IN_DEGREES = TPR / 360;
 
     // Telescoping extendo thingy
@@ -92,12 +89,10 @@ public class Pivot {
 //        pivot.setDirection(DcMotor.Direction.REVERSE);
 
         pivotReading = hardwareMap.get(AnalogInput.class, analogInputName);
-        pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3);
-        pivotEncoder.zero(ENCODER_OFFSET);
+        pivotEncoder = new AbsoluteAnalogEncoder(pivotReading, 3.3).zero(ENCODER_OFFSET);
 
         gp2 = gamepad;
 //        pivotCurrentPos = 0.0;
-
     }
 
 //    public void leoeo () {
@@ -107,7 +102,7 @@ public class Pivot {
 
         String pivotPosition = "";
         String extendoPosition = "";
-
+        pivotEncoder.zero(ENCODER_OFFSET);
 
         // gamepad2 or gamepad1?
 //        boolean up = gp2.dpad_up;
@@ -191,7 +186,7 @@ public class Pivot {
     public String getTelemetry() {
       return String.format(Locale.ENGLISH, "current motor pivot position in ticks %d, current pivot position converted to ticks from absEnc %.2f, target: %.2f, power: %.2f. current extendo position in ticks %d, in degrees %.2f, target: %.2f, power %.2f",
               pivot.getCurrentPosition(),
-              pivotCurrentPos,
+              pivotEncoder.getCurrentPosition(),
               pivotTarget,
               pivotPower,
               extendo.getCurrentPosition(),
