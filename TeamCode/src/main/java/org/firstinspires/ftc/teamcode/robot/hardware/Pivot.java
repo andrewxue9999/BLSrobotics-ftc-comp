@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
@@ -34,12 +35,12 @@ public class Pivot {
 
     private static double superBasePos = -973;
     private static int startIngConfig = -526;
-    private static int pivotBucketPosTicks = 18; // temporary zero: extended all the way up (diagonal)
-    private static int pivotBottomPosTicks = -847;
+    private static double pivotBucketPosTicks = 0.7;
+    private static double pivotBottomPosTicks = -847;
     private PIDController pivotPIDcontroller;
     private static double pivotP = 0.01;
     private static double pivotI = 0.0;
-    private static double pivotD = 0.0001;
+    private static double pivotD = 0;//0.0001;
     private static double pivotF = 0.4;
     private static final double ENCODER_OFFSET = 0.2323;
     private double pivotCurrentPos;
@@ -65,8 +66,10 @@ public class Pivot {
     private final double extendoF = 0.0;
     private double extendoCurrentPos;
     private double extendoTarget;
-
     private Gamepad gp2;
+    private String pivotPosition = "";
+    private String extendoPosition = "";
+    boolean activated = false;
 
     public void init(@NonNull HardwareMap hardwareMap, String pivotName, String analogInputName, String extendoName, Gamepad gamepad) {
         pivot = hardwareMap.get(DcMotor.class, pivotName); // should be "pivot" or "arm_motor0" ?
@@ -98,20 +101,24 @@ public class Pivot {
 //    public void leoeo () {
 //        pivotCurrentPos = pivot.getCurrentPosition();
 //    }
-    public void goTo(boolean up, boolean down, boolean right) {
+    public void goTo() {
 
-        String pivotPosition = "";
-        String extendoPosition = "";
-        pivotEncoder.zero(ENCODER_OFFSET);
+//        pivotEncoder.zero(ENCODER_OFFSET);
 
         // gamepad2 or gamepad1?
-//        boolean up = gp2.dpad_up;
-//        boolean down = gp2.dpad_down;
-//        boolean right = gp2.dpad_right;
-//        boolean left = gp2.dpad_left;
+        boolean up = gp2.dpad_up;
+        boolean down = gp2.dpad_down;
+        boolean right = gp2.dpad_right;
+        boolean left = gp2.dpad_left;
 
-//        boolean intakeLong = gp2.right_bumper;
-//        boolean intakeShort = gp2.left_bumper;
+        boolean intakeLong = gp2.right_bumper;
+        boolean intakeShort = gp2.left_bumper;
+
+        if (up || down || right || left) {
+            activated = true;
+        } else {
+            activated = false;
+        }
 
         if (up) {
             pivotPosition = "scoring";
@@ -137,8 +144,8 @@ public class Pivot {
             case "starting":
                 pivotTarget = startIngConfig;
                 break;
-            default:
-                pivotTarget = 0; // "home" position
+//            default:
+//                pivotTarget = 0; // "home" position
         }
 
         switch (extendoPosition) {
@@ -162,13 +169,28 @@ public class Pivot {
                 break;
         }
 
-        pivotPIDcontroller.setPID(pivotP, pivotI, pivotD);
-        pivotCurrentPos = pivotEncoder.getCurrentPosition();
-        double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
-        double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
-        pivotPower = pivotPid + pivotFeedF;
-        pivot.setPower(pivotPower);
+        if (activated) {
 
+//            pivotPIDcontroller.setSetPoint(pivotTarget);
+
+            //while (!pivotPIDcontroller.atSetPoint()) {
+                pivotPIDcontroller.setPID(pivotP, pivotI, pivotD);
+                pivotCurrentPos = pivotEncoder.getCurrentPosition();
+
+//                double error = pivotTarget - pivotCurrentPos;
+//                double pivotPid = pivotPIDcontroller.calculate(0, error);// pivotCurrentPos, pivotTarget);
+                double pivotPid = pivotPIDcontroller.calculate(pivotCurrentPos, pivotTarget);
+//                double pivotPid = pivotPIDcontroller.calculate(pivot.getCurrentPosition());
+//                pivot.setPower(pivotPid);
+
+
+                double pivotFeedF = Math.cos(Math.toRadians(pivotTarget / TICKS_IN_DEGREES)) * pivotF;
+                pivotPower = Range.clip(pivotPid + pivotFeedF, -1, 1);
+                pivot.setPower(pivotPower);
+
+            //}
+            //pivot.setPower(0);
+        }
     }
 
 
@@ -184,15 +206,19 @@ public class Pivot {
 
     // testing/debugging purposes only
     public String getTelemetry() {
-      return String.format(Locale.ENGLISH, "current motor pivot position in ticks %d, current pivot position converted to ticks from absEnc %.2f, target: %.2f, power: %.2f. current extendo position in ticks %d, in degrees %.2f, target: %.2f, power %.2f",
+      return String.format(Locale.ENGLISH, "current motor pivot position in ticks %d, current pivot position converted to ticks from absEnc %.2f, target: %.2f, pivot power: %.2f, pivot position: %s, pivot target: %s. current extendo position in ticks %d, in degrees %.2f, target: %.2f, extendo power %.2f, extendo position: %s, extendo target: %s",
               pivot.getCurrentPosition(),
               pivotEncoder.getCurrentPosition(),
               pivotTarget,
-              pivotPower,
+              pivot.getPower(),
+              pivotPosition,
+              pivotTarget,
               extendo.getCurrentPosition(),
               extendoCurrentPos,
               extendoTarget,
-              extendo.getPower()
+              extendo.getPower(),
+              extendoPosition,
+              extendoTarget
       );
     }
 }

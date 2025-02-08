@@ -161,7 +161,6 @@ public class SwerveDrivetrain {
         }
     }
 
-
     public void write() {
 
         for (int i = 0; i < 4; i++) {
@@ -171,7 +170,6 @@ public class SwerveDrivetrain {
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
             m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
 //            m.setTargetRotation(((wheelAngles[i]) + headingError) % (2*Math.PI));
-
 
             m.update();
         }

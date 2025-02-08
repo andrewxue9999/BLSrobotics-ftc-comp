@@ -153,7 +153,7 @@ public class Auto extends LinearOpMode {
         if (isStopRequested()) return;
 
         drivetrain.followTrajectorySequence(goFromSpawn);
-        pivot.goTo(true, false, false);
+//        pivot.goTo(true, false, false);
         drivetrain.followTrajectorySequence(goToPickUp);
 
 
