@@ -18,11 +18,15 @@ public class Wrist {
     private final double dropPos = 1.0;
     private final double hangPos = 0.3;
 
+    private final double central_intake = 0.0;
+    private final double central_scoring = 0.5;
+
     private String currentPos;
 
     public void init(@NonNull HardwareMap hardwareMap, String leftWristName, String rightWristName, String centralServoName) {
         leftWrist = hardwareMap.get(Servo.class, leftWristName);
         rightWrist = hardwareMap.get(Servo.class, rightWristName);
+        centralServo = hardwareMap.get(Servo.class, centralServoName);
 
         leftWrist.scaleRange(intakePos, dropPos);
         rightWrist.scaleRange(intakePos, dropPos);
@@ -33,10 +37,14 @@ public class Wrist {
             leftWrist.setPosition(intakePos);
             rightWrist.setPosition(intakePos);
 
+            centralServo.setPosition(central_intake);
+
             currentPos = command;
         } else if (command.equals("score")) {
             leftWrist.setPosition(scoringPos);
             rightWrist.setPosition(scoringPos);
+
+            centralServo.setPosition(central_scoring);
 
             currentPos = command;
         } else if (command.equals("drop")) {
@@ -52,11 +60,6 @@ public class Wrist {
         }
     }
 
-    public void rotate(double angle) {
-
-        // s = r * theta
-        // .9 .0805
-    }
 
     public String returnPos() {
         return currentPos;
