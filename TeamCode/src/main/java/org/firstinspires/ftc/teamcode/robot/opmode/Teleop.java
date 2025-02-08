@@ -131,10 +131,8 @@ public class Teleop extends LinearOpMode {
     public static int PSTARTING = 308;
     public static int ESTARTING = 0;
 
-
-
-
-
+    private int ptarget_ticks;
+    private int etarget_ticks;
 
     @Override
     public void runOpMode() {
@@ -194,9 +192,9 @@ public class Teleop extends LinearOpMode {
 
         // for auto decoding later: this is where "copying" ends
 
-//        pivot.setTargetPosition(170);
-//        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        pivot.setPower(0.5);
+        pivot.setTargetPosition(170);
+        pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pivot.setPower(0.5);
 
         pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -237,8 +235,7 @@ public class Teleop extends LinearOpMode {
 
 
 
-
-//            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_up) {
 //              pivotPid.setPID(pivotP, pivotI, pivotD);
 //
 //                pivotTarget = 1.76;
@@ -248,10 +245,23 @@ public class Teleop extends LinearOpMode {
 //
 //              power = pidPower + ff;
 //              pivot.setPower(power);
-//
-//            }
-//            else if (gamepad2.dpad_down) {
-//
+
+                pivot.setTargetPosition(900);
+//                ptarget_ticks = 900;
+//                pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                pivot.setPower(0.5);
+
+                extendo.setTargetPosition(415);
+//                extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                extendo.setPower(0.5);
+
+//                leftWrist.setPosition(1.0); // 0.9
+////                rightWrist.setPosition(1.0); // 0.9
+//                centralServo.setPosition(0.5);
+
+            }
+            else if (gamepad2.dpad_down) {
+
 //                pivotTarget = 6.18;
 //
 //                pidPower = pivotPid.calculate(pivotEnc.getCurrentPosition() * TPR, pivotTarget * TPR);
@@ -259,30 +269,49 @@ public class Teleop extends LinearOpMode {
 //                power = Range.clip(pidPower + ff, -1, 1);
 //                pivot.setPower(power);
 //
+//                pivot.setTargetPosition(26);
+//                pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                pivot.setPower(0.5);
+
+                ptarget_ticks = 26;
+                etarget_ticks = 198;
+
 //                extendo.setTargetPosition(198);
-//                extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                extendo.setPower(0.5);
+////                extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                extendo.setPower(0.5);
 //
 //                leftWrist.setPosition(0.0); // 0.44
 ////                rightWrist.setPosition(0.0); // 0.44
 //                centralServo.setPosition(0.0);
-//            }
-//            else if (gamepad2.dpad_right) {
+            }
+            else if (gamepad2.dpad_right) {
 //                pivotTarget = 1.76;
 //
 //                pidPower = pivotPid.calculate(pivotEnc.getCurrentPosition() * TPR, pivotTarget * TPR);
 //                double ff = Math.cos(pivotEnc.getCurrentPosition()) * F;
 //                power = Range.clip(pidPower + ff, -1, 1);
 //                pivot.setPower(power);
-//
-//                extendo.setTargetPosition(94);
-//                extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                extendo.setPower(0.5);
-//
-//                leftWrist.setPosition(1.0);
-////                rightWrist.setPosition(0.9);
-//                centralServo.setPosition(0.5);
-//            }
+
+                pivot.setTargetPosition(900);
+                pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                pivot.setPower(0.5);
+
+                extendo.setTargetPosition(94);
+                extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                extendo.setPower(0.5);
+
+                leftWrist.setPosition(1.0);
+//                rightWrist.setPosition(0.9);
+                centralServo.setPosition(0.5);
+            }
+
+//            pivot.setTargetPosition(ptarget_ticks);
+//            extendo.setTargetPosition(etarget_ticks);
+//            pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            pivot.setPower(0.5);
+//            extendo.setPower(0.5);
+
 
 //            pivot.goTo();
 
@@ -304,9 +333,10 @@ public class Teleop extends LinearOpMode {
 //            telemetry.addData("power", power);
 ////            telemetry.addData("Pivot", pivot.getTelemetry());
 //
-//            telemetry.addData("Extendo position ticks", extendo.getCurrentPosition());
+            telemetry.addData("pivot relative encoder", pivot.getCurrentPosition());
+            telemetry.addData("Extendo position ticks", extendo.getCurrentPosition());
 //            telemetry.addData("Extendo current", extendo.getCurrent(CurrentUnit.AMPS));
-//            telemetry.addData("Wrist position", String.format(Locale.ENGLISH, "left wrist position: %.2f, right wrist position: %.2f, central servo position: %.2f", leftWrist.getPosition(), rightWrist.getPosition(), centralServo.getPosition()));
+            telemetry.addData("Wrist position", String.format(Locale.ENGLISH, "left wrist position: %.2f, right wrist position: %.2f, central servo position: %.2f", leftWrist.getPosition(), rightWrist.getPosition(), centralServo.getPosition()));
             telemetry.update();
         }
     }
