@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
 import java.util.concurrent.TimeUnit;
@@ -30,9 +33,13 @@ public class EncoderOffsetTesting extends LinearOpMode {
     double newBackLeftDeg;
     double newBackRightRad;
     double newBackRightDeg;
+
+    Telemetry telemetry;
     
 
     public void runOpMode() throws InterruptedException {
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
