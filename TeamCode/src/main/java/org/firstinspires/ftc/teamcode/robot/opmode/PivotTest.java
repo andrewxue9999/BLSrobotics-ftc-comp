@@ -24,7 +24,6 @@ public class PivotTest extends OpMode {
 
     public static double target = 0;
 
-    Telemetry telemtry;
     private AbsoluteAnalogEncoder penc;
     private AnalogInput encV;
     private DcMotorEx pivot;
@@ -37,7 +36,7 @@ public class PivotTest extends OpMode {
     public void init() {
         pid = new PIDController(kP, kI, kD);
 
-        telemetry = new MultipleTelemetry(telemtry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         pivot = hardwareMap.get(DcMotorEx.class, "pivot");
         encV = hardwareMap.get(AnalogInput.class, "poop");
         penc = new AbsoluteAnalogEncoder(encV, 3.3);
@@ -58,9 +57,11 @@ public class PivotTest extends OpMode {
 
         pivot.setPower(power);
 
-        telemtry.addData("pos", armPos);
-        telemtry.addData("target", target);
+        telemetry.addData("pos", armPos);
+        telemetry.addData("target", target);
 
-        telemtry.update();
+        telemetry.addData("power", power);
+
+        telemetry.update();
     }
 }
