@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.opmode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -23,6 +24,8 @@ public class CommandBased extends CommandOpMode {
 
     @Override
     public void initialize() {
+        CommandScheduler.getInstance().reset();
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         PivotSubsystem pivot = new PivotSubsystem(hardwareMap, "pivot", "poop", telemetry);
 
@@ -38,7 +41,8 @@ public class CommandBased extends CommandOpMode {
     }
 
     @Override
-    public void loop() {
-        telemetry.update();
+    public void run() {
+        CommandScheduler.getInstance().run();
     }
+    //TODO: figure out how to actually use the command scheduler
 }

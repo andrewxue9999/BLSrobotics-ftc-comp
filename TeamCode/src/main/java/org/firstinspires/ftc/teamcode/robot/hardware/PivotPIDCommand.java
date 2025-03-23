@@ -2,14 +2,20 @@ package org.firstinspires.ftc.teamcode.robot.hardware;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 
 public class PivotPIDCommand extends CommandBase {
     private final PivotSubsystem pivot;
-    private final PIDController pid;
+    private final PIDFController pid;
+
+    public static double kP= 0.0;
+    public static double kI = 0.0;
+    public static double kD = 0.0;
+    public static double kF = 0.0; //TODO: tune
 
     public PivotPIDCommand(PivotSubsystem p, double sp) {
         this.pivot = p;
-        this.pid = new PIDController(0,0, 0);
+        this.pid = new PIDFController(kP, kI, kD, kF);
 
         pid.setSetPoint(sp);
 
