@@ -32,11 +32,13 @@ public class CommandBased extends CommandOpMode {
         driver = new GamepadEx(gamepad1);
 
         test = new GamepadButton(driver, GamepadKeys.Button.A);
-        test.whenHeld(new PivotGamepadCommand(pivot, 0.2));
-        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(new PivotGamepadCommand(pivot, -0.2));
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new PivotPIDCommand(pivot, 0.8));
+        test.whenHeld(new PivotGamepadCommand(pivot, 0.2)); //A button
+        driver.getGamepadButton(GamepadKeys.Button.B)
+                .whenHeld(new PivotGamepadCommand(pivot, -0.2));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(new PivotPIDCommand(pivot, 0.8));
 
-
+        
 
     }
 
