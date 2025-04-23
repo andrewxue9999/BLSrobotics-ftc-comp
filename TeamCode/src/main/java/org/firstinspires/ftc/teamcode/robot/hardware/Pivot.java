@@ -1,23 +1,14 @@
-// gear ratios
-// calculations for limits to not exceed 42 inch horizontal limit
 
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.normalizeRadians;
 
-import androidx.annotation.NonNull;
-
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -28,58 +19,99 @@ public class Pivot {
     private DcMotorEx pivot;
     private AbsoluteAnalogEncoder penc;
     private AnalogInput analoginput;
-    private static double EOFFSET = 0.0;
+    private static double EOFFSET = 6.28-0.6;
 
-    PIDFController pid;
-    public static double kP = 0.0;
+    PIDController pid;
+    public static double kP = -1.0;
     public static double kI = 0.0;
-    public static double kD = 0.0;
-    public static double kF = 0.0;
+    public static double kD = 895.0;
+    public static double kF = 0.06;
 
     private static double power;
-    private static final double MAX_POWER = 0.5;
+    private static final double MAX_POWER = 1;
     private static double current;
 
-    public static PIVOT_STATES state;
+    public static PIVOT_STATES state = PIVOT_STATES.INIT;
     private static double pivotPos;
     public static double target;
 
-    public final double LOW = 1.5;
-    public final double HIGH = 2.6;
+    public final double LOW = 0.56;
+    public final double HIGH = 2.2;
+    public final double INIT = 1.3;
 
 
 
     public enum PIVOT_STATES {
-        PICKUP, SCORING
+        PICKUP, SCORING, INIT
 
     }
-
     public void setPivotState(PIVOT_STATES p) {
         state = p;
     }
 
+    public PIVOT_STATES getPivotState() {
+        return state;
+    }
+
     public void initialize(HardwareMap hardwareMap) {
         pivot = hardwareMap.get(DcMotorEx.class, "pivot");
+
         analoginput = hardwareMap.get(AnalogInput.class, "poop");
 
         penc = new AbsoluteAnalogEncoder(analoginput, 3.3);
-//        penc.zero(EOFFSET);
 
-        pid = new PIDFController(kP, kI, kD, kF);
+        penc.zero(EOFFSET);
+
+        pid = new PIDController(kP, kI, kD);
+        pid.setPID(kP, kI, kD);
+        pid.setTolerance(0.04);
+
+
+        target = INIT;
+
+
+        double power = 0.0;
+        double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
+        while(!pid.atSetPoint()) {
+            power = pid.calculate(pivotPos, target) + ff;
+            pivotPos = penc.getCurrentPosition();
+            pivot.setPower(power);
+        }
+
 
 
     }
 
     public void update(Telemetry telemetry) {
-        pid.setPIDF(kP, kI, kD, kF);
+        pid.setPID(kP, kI, kD);
+
+        switch(state){
+            case PICKUP:
+                target = LOW;
+                break;
+            case SCORING:
+                target = HIGH;
+                break;
+            case INIT:
+                target = INIT;
+                break;
+        }
+
+        double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
 
         pivotPos = penc.getCurrentPosition();
 
-        pid.setTolerance(0.1);
-        power = pid.calculate(target, pivotPos);
+        power = pid.calculate(pivotPos, target) + ff;
 
         if(Math.abs(power)>MAX_POWER) {
             power = MAX_POWER * Math.signum(power);
+        }
+        current = pivot.getCurrent(CurrentUnit.AMPS);
+
+        double error = Math.abs(target - penc.getCurrentPosition());
+
+        if (error < 0.3) {
+            power *= 0.4;
         }
 
         pivot.setPower(power);

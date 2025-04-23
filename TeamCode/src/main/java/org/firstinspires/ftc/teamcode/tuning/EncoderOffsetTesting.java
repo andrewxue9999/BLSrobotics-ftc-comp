@@ -2,20 +2,21 @@ package org.firstinspires.ftc.teamcode.tuning;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
 import java.util.concurrent.TimeUnit;
 
+@Config
 @TeleOp(name="Encoder Offset Tester")
-
 public class EncoderOffsetTesting extends LinearOpMode {
+
+
 
     private CRServo axon;
 
@@ -34,19 +35,17 @@ public class EncoderOffsetTesting extends LinearOpMode {
     double newBackRightRad;
     double newBackRightDeg;
 
-    Telemetry telemetry;
-    
 
+    @Override
     public void runOpMode() throws InterruptedException {
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         axon = hardwareMap.get(CRServo.class, "sfrontRight");
 
 
-        axon.setPower(0.5);
+        axon.setPower(0.01);
 
         TimeUnit.MILLISECONDS.sleep(150);
 
@@ -58,6 +57,7 @@ public class EncoderOffsetTesting extends LinearOpMode {
         ebackRight=  new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "ebackRight"), 3.3);
 
         pivotEncoder = new AbsoluteAnalogEncoder(hardwareMap.get(AnalogInput.class, "poop"), 3.3);
+        pivotEncoder.zero(0.3);
 
         waitForStart();
 
@@ -66,6 +66,7 @@ public class EncoderOffsetTesting extends LinearOpMode {
         while (opModeIsActive()) {
 
             double pivot = ((pivotEncoder.getVoltage()) / 3.3) * 2 * Math.PI;
+            pivotEncoder.setInverted(true);
 
             newFrontRightRad = ((efrontRight.getVoltage())/3.3) * 2 * Math.PI;
             newFrontRightDeg = ((efrontRight.getVoltage())/3.3) * 360;

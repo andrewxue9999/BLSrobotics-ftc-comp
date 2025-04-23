@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robot.hardware.Extendo;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.Wrist;
 import org.firstinspires.ftc.teamcode.robot.hardware.swerve.SwerveDrivetrain;
@@ -37,6 +38,7 @@ public class Teleop extends LinearOpMode {
     public SwerveDrivetrain drivetrain;
 
     Pivot pivot = new Pivot();
+    Extendo extendo = new Extendo();
     Claw claw = new Claw();
 
 
@@ -54,9 +56,10 @@ public class Teleop extends LinearOpMode {
 //        fw = new SlewRateLimiter(fw_r);
 //        str = new SlewRateLimiter(str_r);
 
-        pivot = new Pivot();
         pivot.initialize(hardwareMap);
+        pivot.update(telemetry);
 
+        extendo.initialize(hardwareMap);
 
         waitForStart();
         runtime.reset();
@@ -74,17 +77,21 @@ public class Teleop extends LinearOpMode {
 //
 //            drivetrain.read();
 //
-//            drivetrain.maintainHeading = Math.abs(driveY) < 0.002 && Math.abs(driveX) < 0.002 && Math.abs(azimuth) < 0.002;
+//            Pose drive = new Pose(driveY, driveX, azimuth);
 //
-//            Pose drive = new Pose(new Point(joystickScalar(driveY, 0.001), joystickScalar(driveX, 0.001)), joystickScalar(azimuth, 0.01));
-//            drive = new Pose(fw.calculate(drive.x), str.calculate(drive.y), drive.heading); // yes, these two lines can be simplified to one, but keep it this way for now.
-//
-//            drivetrain.set(new Pose(driveX, driveY, azimuth));
 //            drivetrain.set(drive);
 //            drivetrain.write();
 //            drivetrain.getTelemetry();
 
             pivot.update(telemetry);
+
+            if (gamepad1.dpad_up) {
+                pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
+            } else if (gamepad1.dpad_down) {
+                pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
+            }
+
+            extendo.update(telemetry);
 
 
             if (gamepad2.a) {
