@@ -42,7 +42,7 @@ public class Pivot {
 
 
     public enum PIVOT_STATES {
-        PICKUP, SCORING, INIT
+        PICKUP, SCORING, INIT, WALL
 
     }
     public void setPivotState(PIVOT_STATES p) {
@@ -53,24 +53,21 @@ public class Pivot {
         return state;
     }
 
+    public static double getPivotPos() { return pivotPos-0.7; }
+
     public void initialize(HardwareMap hardwareMap) {
         pivot = hardwareMap.get(DcMotorEx.class, "pivot");
-
         analoginput = hardwareMap.get(AnalogInput.class, "poop");
-
         penc = new AbsoluteAnalogEncoder(analoginput, 3.3);
-
         penc.zero(EOFFSET);
 
         pid = new PIDController(kP, kI, kD);
         pid.setPID(kP, kI, kD);
-        pid.setTolerance(0.04);
+        pid.setTolerance(0.07);
 
 
         target = INIT;
-
-
-        double power = 0.0;
+        double power;
         double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
         while(!pid.atSetPoint()) {
             power = pid.calculate(pivotPos, target) + ff;
@@ -108,7 +105,7 @@ public class Pivot {
         }
         current = pivot.getCurrent(CurrentUnit.AMPS);
 
-        double error = Math.abs(target - penc.getCurrentPosition());
+        double error = Math.abs(target - pivotPos);
 
         if (error < 0.3) {
             power *= 0.4;
@@ -119,6 +116,7 @@ public class Pivot {
         telemetry.addData("target", target);
         telemetry.addData("pos", pivotPos);
         telemetry.addData("power", power);
+        telemetry.addData("error", error);
         telemetry.addData("current", current);
 
 
