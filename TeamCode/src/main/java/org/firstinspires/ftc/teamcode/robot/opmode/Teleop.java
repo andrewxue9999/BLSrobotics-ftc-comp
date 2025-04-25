@@ -21,11 +21,22 @@ import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
 
-import java.util.Locale;
-
 @Config
 @TeleOp(name="(use this fr) Teleop", group="Linear OpMode")
 public class Teleop extends LinearOpMode {
+
+    public enum ROBOT_STATE {
+        INIT, BUCKET, CHAMBER, PICKUP
+    }
+
+    public static ROBOT_STATE robotState;
+    public void setRobotState(ROBOT_STATE rs) {
+        this.robotState = rs;
+    }
+    public ROBOT_STATE getRobotState() {
+        return this.robotState;
+    }
+
 
     private ElapsedTime runtime = new ElapsedTime();
     public final double TRACKWIDTH = 12.6378;
@@ -35,16 +46,16 @@ public class Teleop extends LinearOpMode {
     private SlewRateLimiter str;
     public static double fw_r = 4;
     public static double str_r = 4;
-    public SwerveDrivetrain drivetrain;
 
+    SwerveDrivetrain drivetrain;
     Pivot pivot = new Pivot();
     Extendo extendo = new Extendo();
     Claw claw = new Claw();
 
 
+
     @Override
     public void runOpMode() {
-
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Status", "Initialized");
@@ -57,9 +68,15 @@ public class Teleop extends LinearOpMode {
 //        str = new SlewRateLimiter(str_r);
 
         pivot.initialize(hardwareMap);
-        pivot.update(telemetry);
+
+        while(!opModeIsActive()) {
+            pivot.setRawPower(0.05);
+        }
 
         extendo.initialize(hardwareMap);
+
+        claw.initialize(hardwareMap);
+
 
         waitForStart();
         runtime.reset();
@@ -93,10 +110,17 @@ public class Teleop extends LinearOpMode {
 
             extendo.update(telemetry);
 
-
-            if (gamepad2.a) {
-                claw.toggle(runtime);
+            if (gamepad1.a) {
+                switch (claw.getClawState()) {
+                    case CLOSED:
+                        claw.setClawState(Claw.CLAW_STATES.OPEN);
+                        break;
+                    case OPEN:
+                        claw.setClawState(Claw.CLAW_STATES.CLOSED);
+                        break;
+                }
             }
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

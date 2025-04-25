@@ -1,68 +1,70 @@
-// two servos that turn; takes difference of two servos to make change the height of claw
-// opposite spin: spins in place
-// same spin: moves up/down
-
 package org.firstinspires.ftc.teamcode.robot.hardware;
 
-import androidx.annotation.NonNull;
-
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robot.opmode.Teleop;
+
+@Config
 public class DifferentialWrist {
-    private Servo leftWrist;
-    private Servo rightWrist;
+    public Servo right;
+    public Servo left;
 
-    private final double intakePos = 0.1;
-    private final double scoringPos = 0.9;
-    private final double dropPos = 1.0;
-    private final double hangPos = 0.3;
+    public static double[][] positions = {
+            {}, // pickup para
+            {}, // pickup perp
+            {}, // pickup slanted
+            {}, // score bucket
+            {}
+    };
 
-    private String currentPos;
-
-    public void init(@NonNull HardwareMap hardwareMap, String leftWristName, String rightWristName) {
-        leftWrist = hardwareMap.get(Servo.class, leftWristName);
-        rightWrist = hardwareMap.get(Servo.class, rightWristName);
-
-        leftWrist.scaleRange(intakePos, dropPos);
-        rightWrist.scaleRange(intakePos, dropPos);
+    public enum WRIST_STATE {
+        PICKUP, BUCKET, CHAMBER, WALL
     }
 
-    public void goToPos(String command) {
-        if (command.equals("intake")) {
-            leftWrist.setPosition(intakePos);
-            rightWrist.setPosition(intakePos);
+    public static WRIST_STATE wristState;
 
-            currentPos = command;
-        } else if (command.equals("score")) {
-            leftWrist.setPosition(scoringPos);
-            rightWrist.setPosition(scoringPos);
+    public void setWristState(WRIST_STATE ws) {
+        this.wristState = ws;
+    }
+    public WRIST_STATE getWristState() {
+        return this.wristState;
+    }
 
-            currentPos = command;
-        } else if (command.equals("drop")) {
-            leftWrist.setPosition(dropPos);
-            rightWrist.setPosition(dropPos);
+    public void initialize(HardwareMap hardwareMap) {
+        right = hardwareMap.get(Servo.class, "wright");
+        left = hardwareMap.get(Servo.class, "wleft");
 
-            currentPos = command;
-        } else if (command.equals("hang")) {
-            leftWrist.setPosition(hangPos);
-            rightWrist.setPosition(hangPos);
 
-            currentPos = command;
+    }
+
+    public void update(Telemetry telemetry) {
+        switch (wristState) {
+            case PICKUP:
+                right.setPosition(positions[0][0]);
+                left.setPosition(positions[0][1]);
+                break;
+            case BUCKET:
+                right.setPosition(positions[3][0]);
+                left.setPosition(positions[3][1]);
+                break;
+//            case CHAMBER:
+//                right.setPosition(positions[0][0]);
+//                left.setPosition(positions[0][1]);
+//                break;
+//            case WALL:
+//                right.setPosition(positions[0][0]);
+//                left.setPosition(positions[0][1]);
+//                break;
         }
+        
+
     }
 
-    public void rotate(double angle) {
 
-        // s = r * theta
-        // .9 .0805
-    }
 
-    public String returnPos() {
-        return currentPos;
-    }
 
-    public String getTelemetry() {
-        return String.format("Position: %S", currentPos);
-    }
+
 }

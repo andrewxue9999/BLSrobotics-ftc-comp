@@ -22,9 +22,9 @@ public class Pivot {
     private static double EOFFSET = 6.28-0.6;
 
     PIDController pid;
-    public static double kP = -1.0;
+    public static double kP = 1.8;
     public static double kI = 0.0;
-    public static double kD = 895.0;
+    public static double kD = 0;
     public static double kF = 0.06;
 
     private static double power;
@@ -69,9 +69,11 @@ public class Pivot {
         target = INIT;
         double power;
         double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
+        pid.setSetPoint(target);
+        pivotPos = penc.getCurrentPosition();
         while(!pid.atSetPoint()) {
-            power = pid.calculate(pivotPos, target) + ff;
             pivotPos = penc.getCurrentPosition();
+            power = pid.calculate(pivotPos) + ff;
             pivot.setPower(power);
         }
 
@@ -91,7 +93,6 @@ public class Pivot {
                 break;
             case INIT:
                 target = INIT;
-                break;
         }
 
         double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
@@ -107,9 +108,9 @@ public class Pivot {
 
         double error = Math.abs(target - pivotPos);
 
-        if (error < 0.3) {
-            power *= 0.4;
-        }
+//        if (error < 0.3) {
+//            power *= 0.4;
+//        }
 
         pivot.setPower(power);
 
@@ -120,6 +121,10 @@ public class Pivot {
         telemetry.addData("current", current);
 
 
+    }
+
+    public void setRawPower(double power) {
+        pivot.setPower(power);
     }
 
 
