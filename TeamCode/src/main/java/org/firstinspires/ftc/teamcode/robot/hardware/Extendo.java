@@ -5,11 +5,9 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.robot.opmode.Teleop;
 
 @Config
 public class Extendo {
@@ -41,7 +39,7 @@ public class Extendo {
 
 
     public enum EXTENDO_STATES {
-        BHIGH, BLOW, CHIGH, CLOW, PICKUP, WALL, RETRACTED, RESETING
+        BHIGH, BLOW, CHIGH, CLOW, PICKUP, WALL, RETRACTED, RESETTING
     }
 
     public void setExtendoState(EXTENDO_STATES s) {
