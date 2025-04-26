@@ -7,10 +7,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.ftccommon.internal.RunOnBoot;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.hardware.Extendo;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
@@ -26,7 +28,7 @@ import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
 public class Teleop extends LinearOpMode {
 
     public enum ROBOT_STATE {
-        INIT, BUCKET, CHAMBER, PICKUP
+        INIT, BUCKET, CHAMBER, PICKUP, POST_PICKUP
     }
 
     public static ROBOT_STATE robotState;
@@ -46,6 +48,8 @@ public class Teleop extends LinearOpMode {
     private SlewRateLimiter str;
     public static double fw_r = 4;
     public static double str_r = 4;
+
+    public Gamepad previousGamepad1 = new Gamepad();
 
     SwerveDrivetrain drivetrain;
     Pivot pivot = new Pivot();
@@ -81,6 +85,8 @@ public class Teleop extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        setRobotState(ROBOT_STATE.PICKUP);
+
         while (opModeIsActive()) {
 
 //            if (gamepad1.start) {
@@ -100,34 +106,49 @@ public class Teleop extends LinearOpMode {
 //            drivetrain.write();
 //            drivetrain.getTelemetry();
 
-            pivot.update(telemetry);
+            if (gamepad1.a) {
+                claw.actuate();
+            }
+
 
             if (gamepad1.dpad_up) {
-                pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
+                setRobotState(ROBOT_STATE.BUCKET);
             } else if (gamepad1.dpad_down) {
-                pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
+                setRobotState(ROBOT_STATE.PICKUP);
+            } else if (gamepad1.dpad_right) {
+                setRobotState(ROBOT_STATE.POST_PICKUP);
             }
+
+            switch(getRobotState()) {
+                case BUCKET:
+                    pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
+                    extendo.setExtendoState(Extendo.EXTENDO_STATES.BHIGH);
+                    break;
+                case PICKUP:
+                    pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
+                    extendo.setExtendoState(Extendo.EXTENDO_STATES.PICKUP);
+                    break;
+                case POST_PICKUP:
+                    pivot.setPivotState(Pivot.PIVOT_STATES.POST_PICKUP);
+                    extendo.setExtendoState(Extendo.EXTENDO_STATES.RETRACTED);
+                    break;
+            }
+
+            pivot.update(telemetry);
 
             extendo.update(telemetry);
-
-            if (gamepad1.a) {
-                switch (claw.getClawState()) {
-                    case CLOSED:
-                        claw.setClawState(Claw.CLAW_STATES.OPEN);
-                        break;
-                    case OPEN:
-                        claw.setClawState(Claw.CLAW_STATES.CLOSED);
-                        break;
-                }
-            }
+            
 
 
             // Show the elapsed game time and wheel power.
+            telemetry.addData("dpad up down", gamepad1.dpad_up || gamepad1.dpad_down);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 //            telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
 //            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
 
             telemetry.update();
+
+            previousGamepad1 = this.gamepad1;
         }
     }
 

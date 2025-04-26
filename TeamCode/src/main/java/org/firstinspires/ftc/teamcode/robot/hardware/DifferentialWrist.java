@@ -59,7 +59,7 @@ public class DifferentialWrist {
 //                left.setPosition(positions[0][1]);
 //                break;
         }
-        
+
 
     }
 

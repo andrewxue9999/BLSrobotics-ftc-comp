@@ -14,10 +14,10 @@ public class Claw {
 
     private static double current;
 
-    public static CLAW_STATES state = CLAW_STATES.INIT;
+    public static CLAW_STATES state = CLAW_STATES.CLOSED;
 
     public final double OPEN = 1.0;
-    public final double CLOSED = 0.1;
+    public final double CLOSED = 0.0;
     public final double INIT = 1.0;
 
 
@@ -35,14 +35,10 @@ public class Claw {
 
     public void initialize(HardwareMap hardwareMap) {
         clawServo = hardwareMap.get(Servo.class, "claw");
-        clawServo.setPosition(INIT);
     }
 
     public void update(Telemetry telemetry) {
         switch(state) {
-            case INIT:
-                target = INIT;
-                break;
             case OPEN:
                 target = OPEN;
                 break;
@@ -56,6 +52,16 @@ public class Claw {
 
         telemetry.addData("State", state);
 
+    }
+
+    public void actuate() {
+        if (getClawState() == CLAW_STATES.OPEN) {
+            clawServo.setPosition(CLOSED);
+        } else if (getClawState() == CLAW_STATES.INIT) {
+            clawServo.setPosition(OPEN);
+        } else if (getClawState() == CLAW_STATES.CLOSED) {
+            clawServo.setPosition(OPEN);
+        }
     }
 
 }

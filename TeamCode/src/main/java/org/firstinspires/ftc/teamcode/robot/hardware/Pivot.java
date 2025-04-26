@@ -22,27 +22,28 @@ public class Pivot {
     private static double EOFFSET = 6.28-0.6;
 
     PIDController pid;
-    public static double kP = 1.8;
+    public static double kP = 1.4;
     public static double kI = 0.0;
-    public static double kD = 0;
+    public static double kD = 0.07;
     public static double kF = 0.06;
 
     private static double power;
     private static final double MAX_POWER = 1;
     private static double current;
 
-    public static PIVOT_STATES state = PIVOT_STATES.INIT;
+    public static PIVOT_STATES state = PIVOT_STATES.PICKUP;
     private static double pivotPos;
     public static double target;
 
-    public final double LOW = 0.56;
+    public final double LOW = 0.5;
     public final double HIGH = 2.2;
     public final double INIT = 1.3;
+    public final double POST_PICKUP = 0.9;
 
 
 
     public enum PIVOT_STATES {
-        PICKUP, SCORING, INIT, WALL
+        PICKUP, SCORING, INIT, WALL, POST_PICKUP
 
     }
     public void setPivotState(PIVOT_STATES p) {
@@ -93,6 +94,10 @@ public class Pivot {
                 break;
             case INIT:
                 target = INIT;
+                break;
+            case POST_PICKUP:
+                target = POST_PICKUP;
+                break;
         }
 
         double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
