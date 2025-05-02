@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
 public class Teleop extends LinearOpMode {
 
     public enum ROBOT_STATE {
-        INIT, BUCKET, CHAMBER, PICKUP, POST_PICKUP
+        INIT, BUCKET, CHAMBER, HUNTING, PICKUP, CHECKING_PICKUP, POST_PICKUP
     }
 
     public static ROBOT_STATE robotState;
@@ -56,6 +56,11 @@ public class Teleop extends LinearOpMode {
     Extendo extendo = new Extendo();
     Claw claw = new Claw();
 
+    ElapsedTime pivotTimer = new ElapsedTime();
+    private static final double DOWN_TIME = 0.3;
+
+
+
 
 
     @Override
@@ -72,6 +77,7 @@ public class Teleop extends LinearOpMode {
 //        str = new SlewRateLimiter(str_r);
 
         pivot.initialize(hardwareMap);
+        pivotTimer.reset();
 
         while(!opModeIsActive()) {
             pivot.setRawPower(0.05);
@@ -114,9 +120,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 setRobotState(ROBOT_STATE.BUCKET);
             } else if (gamepad1.dpad_down) {
-                setRobotState(ROBOT_STATE.PICKUP);
-            } else if (gamepad1.dpad_right) {
-                setRobotState(ROBOT_STATE.POST_PICKUP);
+                setRobotState(ROBOT_STATE.HUNTING);
             }
 
             switch(getRobotState()) {
@@ -124,9 +128,38 @@ public class Teleop extends LinearOpMode {
                     pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
                     extendo.setExtendoState(Extendo.EXTENDO_STATES.BHIGH);
                     break;
-                case PICKUP:
-                    pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
+                case HUNTING:
+                    claw.setClawState(Claw.CLAW_STATES.OPEN);
+
+                    pivot.setPivotState(Pivot.PIVOT_STATES.HUNTING);
                     extendo.setExtendoState(Extendo.EXTENDO_STATES.PICKUP);
+
+                    if (gamepad1.a) {
+                        setRobotState(ROBOT_STATE.PICKUP);
+
+                        pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
+
+                        pivotTimer.reset();
+                    }
+
+
+
+                    break;
+                case PICKUP:
+
+                    if(pivotTimer.seconds() >= DOWN_TIME){
+                        claw.setClawState(Claw.CLAW_STATES.CLOSED);
+
+                        setRobotState(ROBOT_STATE.CHECKING_PICKUP);
+                    }
+
+                    break;
+                case CHECKING_PICKUP:
+                    if (claw.checkPickedUp("red")) {
+                        setRobotState(ROBOT_STATE.POST_PICKUP);
+                    } else {
+                        setRobotState(ROBOT_STATE.HUNTING);
+                    }
                     break;
                 case POST_PICKUP:
                     pivot.setPivotState(Pivot.PIVOT_STATES.POST_PICKUP);
@@ -135,6 +168,7 @@ public class Teleop extends LinearOpMode {
             }
 
             pivot.update(telemetry);
+            claw.update(telemetry);
 
             extendo.update(telemetry);
             

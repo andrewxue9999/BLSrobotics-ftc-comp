@@ -35,7 +35,8 @@ public class Pivot {
     private static double pivotPos;
     public static double target;
 
-    public final double LOW = 0.5;
+    public final double HUNTING = 0.7;
+    public final double PICKUP = 0.5;
     public final double HIGH = 2.2;
     public final double INIT = 1.3;
     public final double POST_PICKUP = 0.9;
@@ -43,7 +44,7 @@ public class Pivot {
 
 
     public enum PIVOT_STATES {
-        PICKUP, SCORING, INIT, WALL, POST_PICKUP
+        PICKUP, SCORING, INIT, WALL, HUNTING, POST_PICKUP
 
     }
     public void setPivotState(PIVOT_STATES p) {
@@ -86,8 +87,11 @@ public class Pivot {
         pid.setPID(kP, kI, kD);
 
         switch(state){
+            case HUNTING:
+                target = HUNTING;
+                break;
             case PICKUP:
-                target = LOW;
+                target = PICKUP;
                 break;
             case SCORING:
                 target = HIGH;
