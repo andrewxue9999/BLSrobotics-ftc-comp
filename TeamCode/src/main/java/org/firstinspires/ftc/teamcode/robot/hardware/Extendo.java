@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,8 +19,8 @@ public class Extendo {
     PIDController pid;
     public static double kP = 0.03;
     public static double kI = 0.0;
-    public static double kD = 0.0009;
-    public static double kF = 0.06;
+    public static double kD = 0.001;
+    public static double kF = 0.08;
 
     private static double power;
     private static final double MAX_POWER = 1.0;
@@ -34,7 +35,7 @@ public class Extendo {
     public static int target = 0;
 
     public static int RETRACTED = 0;
-    public static int BHIGH = 400;
+    public static int BHIGH = 440;
     public static int BLOW = 0;
     public static int CHIGH = 0;
     public static int CLOW = 0;
@@ -53,8 +54,10 @@ public class Extendo {
 
     public void initialize(HardwareMap hardwareMap) {
         extendo = hardwareMap.get(DcMotorEx.class, "extendo");
+        extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         pid = new PIDController(kP, kI, kD);
         pid.setPID(kP, kI, kD);
@@ -87,13 +90,22 @@ public class Extendo {
             case RESETTING:
                 reset();
                 break;
+            case INIT:
+                target = RETRACTED;
+                break;
         }
 
-        double ff = kF * Math.cos(Pivot.getPivotPos());
+        extendo.setTargetPosition(target);
+        extendo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendo.setPower(0.75);
+
 
         extendoPos = extendo.getCurrentPosition();
 
-        power = pid.calculate(extendoPos, target) + ff;
+        double ff = kF * Math.cos(Pivot.getPivotPos());
+        double PIDpower = pid.calculate(extendoPos, target);
+
+        power = PIDpower + ff;
 
         if(Math.abs(power)>MAX_POWER) {
             power = MAX_POWER * Math.signum(power);
@@ -105,17 +117,18 @@ public class Extendo {
 
         extendo.setPower(power);
 
-        maxCurrent = 0.0;
-
         if(current>maxCurrent) {
             maxCurrent = current;
         }
 
 
 
+        telemetry.addData("extendo PIDPower", PIDpower);
+        telemetry.addData("extendo FF", ff);
+        telemetry.addData("error", error);
         telemetry.addData("extendoTarget", target);
         telemetry.addData("extendopos", extendoPos);
-        telemetry.addData("error", error);
+
         telemetry.addData("EXTENDO current", current);
         telemetry.addData("Max Current", maxCurrent);
 

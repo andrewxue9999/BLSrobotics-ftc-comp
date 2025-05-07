@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.opmode;
 
+import android.text.ParcelableSpan;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -59,6 +61,12 @@ public class Teleop extends LinearOpMode {
     ElapsedTime pivotTimer = new ElapsedTime();
     private static final double DOWN_TIME = 0.3;
 
+    ElapsedTime clawTimer = new ElapsedTime();
+    private static final double CLOSE_TIME = 0.5;
+
+    ElapsedTime extendoTimer = new ElapsedTime();
+    private static final double RETRACT_TIME = 0.25;
+
 
 
 
@@ -70,11 +78,11 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-//        drivetrain = new SwerveDrivetrain();
-//        drivetrain.init(hardwareMap);
-//
-//        fw = new SlewRateLimiter(fw_r);
-//        str = new SlewRateLimiter(str_r);
+        drivetrain = new SwerveDrivetrain();
+        drivetrain.init(hardwareMap);
+
+        fw = new SlewRateLimiter(fw_r);
+        str = new SlewRateLimiter(str_r);
 
         pivot.initialize(hardwareMap);
         pivotTimer.reset();
@@ -84,65 +92,72 @@ public class Teleop extends LinearOpMode {
         }
 
         extendo.initialize(hardwareMap);
+        extendoTimer.reset();
 
         claw.initialize(hardwareMap);
+        clawTimer.reset();
 
 
         waitForStart();
         runtime.reset();
 
-        setRobotState(ROBOT_STATE.PICKUP);
+        setRobotState(ROBOT_STATE.POST_PICKUP);
 
         while (opModeIsActive()) {
 
-//            if (gamepad1.start) {
-//                drivetrain.resetIMU();
-//            }
-//            // left stick to go forward, and right stick to turn.
-//            double driveY = gamepad1.left_stick_y;
-//            double driveX = -gamepad1.left_stick_x;
-//
-//            double azimuth = -gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
-//
-//            drivetrain.read();
-//
-//            Pose drive = new Pose(driveY, driveX, azimuth);
-//
-//            drivetrain.set(drive);
-//            drivetrain.write();
-//            drivetrain.getTelemetry();
-
-            if (gamepad1.a) {
-                claw.actuate();
+            if (gamepad1.start) {
+                drivetrain.resetIMU();
             }
+            // left stick to go forward, and right stick to turn.
+            double driveY = gamepad1.left_stick_y;
+            double driveX = -gamepad1.left_stick_x;
+
+            double azimuth = -gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
+
+            drivetrain.read();
+
+            Pose drive = new Pose(driveY, driveX, azimuth);
+
+            drivetrain.set(drive);
+            drivetrain.write();
+            drivetrain.getTelemetry();
+
+//            if (gamepad1.a) {
+//                claw.actuate();
+//            }
 
 
             if (gamepad1.dpad_up) {
                 setRobotState(ROBOT_STATE.BUCKET);
             } else if (gamepad1.dpad_down) {
                 setRobotState(ROBOT_STATE.HUNTING);
+                extendo.setExtendoState(Extendo.EXTENDO_STATES.PICKUP);
+
+                extendoTimer.reset();
             }
 
             switch(getRobotState()) {
                 case BUCKET:
                     pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
                     extendo.setExtendoState(Extendo.EXTENDO_STATES.BHIGH);
+
+                    if (gamepad1.b) {
+                        claw.setClawState(Claw.CLAW_STATES.OPEN);
+                    }
                     break;
                 case HUNTING:
                     claw.setClawState(Claw.CLAW_STATES.OPEN);
+                    if (extendoTimer.seconds() >= RETRACT_TIME) {
+                        pivot.setPivotState(Pivot.PIVOT_STATES.HUNTING);
+                        if (gamepad1.a) {
+                            setRobotState(ROBOT_STATE.PICKUP);
 
-                    pivot.setPivotState(Pivot.PIVOT_STATES.HUNTING);
-                    extendo.setExtendoState(Extendo.EXTENDO_STATES.PICKUP);
+                            pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
 
-                    if (gamepad1.a) {
-                        setRobotState(ROBOT_STATE.PICKUP);
+                            pivotTimer.reset();
+                        }
 
-                        pivot.setPivotState(Pivot.PIVOT_STATES.PICKUP);
-
-                        pivotTimer.reset();
                     }
-
-
 
                     break;
                 case PICKUP:
@@ -151,14 +166,15 @@ public class Teleop extends LinearOpMode {
                         claw.setClawState(Claw.CLAW_STATES.CLOSED);
 
                         setRobotState(ROBOT_STATE.CHECKING_PICKUP);
+
+                        clawTimer.reset();
                     }
 
                     break;
                 case CHECKING_PICKUP:
-                    if (claw.checkPickedUp("red")) {
+
+                    if (clawTimer.seconds() >= CLOSE_TIME) {
                         setRobotState(ROBOT_STATE.POST_PICKUP);
-                    } else {
-                        setRobotState(ROBOT_STATE.HUNTING);
                     }
                     break;
                 case POST_PICKUP:
@@ -177,8 +193,8 @@ public class Teleop extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("dpad up down", gamepad1.dpad_up || gamepad1.dpad_down);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
-//            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
+            telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
+            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
 
             telemetry.update();
 

@@ -18,8 +18,8 @@ public class Claw {
 
     public static CLAW_STATES state = CLAW_STATES.CLOSED;
 
-    public final double OPEN = 1.0;
-    public final double CLOSED = 0.0;
+    public final double OPEN = 0.6;
+    public final double CLOSED = 1.0;
     public final double INIT = 1.0;
 
     public final double clawWithSample = 0.05;
@@ -42,6 +42,7 @@ public class Claw {
 
     public void initialize(HardwareMap hardwareMap) {
         clawServo = hardwareMap.get(Servo.class, "claw");
+        colorSesnor = hardwareMap.get(ColorRangeSensor.class, "Colorado");
     }
 
     public void update(Telemetry telemetry) {

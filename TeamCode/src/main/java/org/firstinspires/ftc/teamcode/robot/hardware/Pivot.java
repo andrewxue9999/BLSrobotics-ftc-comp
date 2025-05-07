@@ -35,8 +35,8 @@ public class Pivot {
     private static double pivotPos;
     public static double target;
 
-    public final double HUNTING = 0.7;
-    public final double PICKUP = 0.5;
+    public final double HUNTING = 0.6;
+    public final double PICKUP = 0.45;
     public final double HIGH = 2.2;
     public final double INIT = 1.3;
     public final double POST_PICKUP = 0.9;
