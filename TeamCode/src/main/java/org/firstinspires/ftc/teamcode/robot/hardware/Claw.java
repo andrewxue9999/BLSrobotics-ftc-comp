@@ -18,8 +18,8 @@ public class Claw {
 
     public static CLAW_STATES state = CLAW_STATES.CLOSED;
 
-    public final double OPEN = 0.6;
-    public final double CLOSED = 1.0;
+    public final double OPEN = 0.0;
+    public final double CLOSED = 0.45;
     public final double INIT = 1.0;
 
     public final double clawWithSample = 0.05;

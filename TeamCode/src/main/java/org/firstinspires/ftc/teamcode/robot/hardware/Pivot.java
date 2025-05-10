@@ -24,7 +24,7 @@ public class Pivot {
     PIDController pid;
     public static double kP = 1.4;
     public static double kI = 0.0;
-    public static double kD = 0.07;
+    public static double kD = 0.09;
     public static double kF = 0.06;
 
     private static double power;

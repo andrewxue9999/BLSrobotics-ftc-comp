@@ -32,7 +32,7 @@ public class Extendo {
 
 
     public static int extendoPos = 0;
-    public static int target = 0;
+    public static int target = 0;   
 
     public static int RETRACTED = 0;
     public static int BHIGH = 440;
@@ -54,7 +54,7 @@ public class Extendo {
 
     public void initialize(HardwareMap hardwareMap) {
         extendo = hardwareMap.get(DcMotorEx.class, "extendo");
-        extendo.setDirection(DcMotorSimple.Direction.REVERSE);
+        //extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

@@ -65,7 +65,7 @@ public class Teleop extends LinearOpMode {
     private static final double CLOSE_TIME = 0.5;
 
     ElapsedTime extendoTimer = new ElapsedTime();
-    private static final double RETRACT_TIME = 0.25;
+    private static final double RETRACT_TIME = 0.4;
 
 
 
@@ -109,7 +109,7 @@ public class Teleop extends LinearOpMode {
                 drivetrain.resetIMU();
             }
             // left stick to go forward, and right stick to turn.
-            double driveY = gamepad1.left_stick_y;
+            double driveY = gamepad1.left_stick_y   ;
             double driveX = -gamepad1.left_stick_x;
 
             double azimuth = -gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
