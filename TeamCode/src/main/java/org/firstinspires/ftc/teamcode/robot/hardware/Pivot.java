@@ -68,16 +68,7 @@ public class Pivot {
         pid.setTolerance(0.07);
 
 
-        target = INIT;
-        double power;
-        double ff = kF * Math.cos(penc.getCurrentPosition()-0.7);
-        pid.setSetPoint(target);
-        pivotPos = penc.getCurrentPosition();
-        while(!pid.atSetPoint()) {
-            pivotPos = penc.getCurrentPosition();
-            power = pid.calculate(pivotPos) + ff;
-            pivot.setPower(power);
-        }
+
 
 
 

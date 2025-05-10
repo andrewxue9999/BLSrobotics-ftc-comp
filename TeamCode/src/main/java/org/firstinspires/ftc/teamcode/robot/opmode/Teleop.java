@@ -87,15 +87,17 @@ public class Teleop extends LinearOpMode {
         pivot.initialize(hardwareMap);
         pivotTimer.reset();
 
-        while(!opModeIsActive()) {
-            pivot.setRawPower(0.05);
-        }
-
         extendo.initialize(hardwareMap);
         extendoTimer.reset();
 
         claw.initialize(hardwareMap);
         clawTimer.reset();
+
+        while (opModeInInit()) {
+            pivot.setPivotState(Pivot.PIVOT_STATES.INIT);
+            pivot.update(telemetry);
+            telemetry.update();
+        }
 
 
         waitForStart();
@@ -109,7 +111,7 @@ public class Teleop extends LinearOpMode {
                 drivetrain.resetIMU();
             }
             // left stick to go forward, and right stick to turn.
-            double driveY = gamepad1.left_stick_y   ;
+            double driveY = gamepad1.left_stick_y;
             double driveX = -gamepad1.left_stick_x;
 
             double azimuth = -gamepad1.right_stick_x; // because Kevin wants to use astronomical terms for "turn" now
@@ -121,11 +123,6 @@ public class Teleop extends LinearOpMode {
             drivetrain.set(drive);
             drivetrain.write();
             drivetrain.getTelemetry();
-
-//            if (gamepad1.a) {
-//                claw.actuate();
-//            }
-
 
             if (gamepad1.dpad_up) {
                 setRobotState(ROBOT_STATE.BUCKET);
