@@ -54,7 +54,7 @@ public class Extendo {
 
     public void initialize(HardwareMap hardwareMap) {
         extendo = hardwareMap.get(DcMotorEx.class, "extendo");
-        //extendo.setDirection(DcMotorSimple.Direction.REVERSE);
+        extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -125,6 +125,7 @@ public class Extendo {
 
         telemetry.addData("extendo PIDPower", PIDpower);
         telemetry.addData("extendo FF", ff);
+        telemetry.addData("extendo real power", power);
         telemetry.addData("error", error);
         telemetry.addData("extendoTarget", target);
         telemetry.addData("extendopos", extendoPos);
