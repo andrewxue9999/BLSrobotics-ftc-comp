@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.ftccommon.internal.RunOnBoot;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robot.hardware.DifferentialWrist;
 import org.firstinspires.ftc.teamcode.robot.hardware.Extendo;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
 import org.firstinspires.ftc.teamcode.robot.hardware.Wrist;
@@ -57,6 +58,7 @@ public class Teleop extends LinearOpMode {
     Pivot pivot = new Pivot();
     Extendo extendo = new Extendo();
     Claw claw = new Claw();
+    DifferentialWrist diffy = new DifferentialWrist();
 
     ElapsedTime pivotTimer = new ElapsedTime();
     private static final double DOWN_TIME = 0.3;
@@ -92,6 +94,8 @@ public class Teleop extends LinearOpMode {
 
         claw.initialize(hardwareMap);
         clawTimer.reset();
+
+        diffy.initialize(hardwareMap);
 
         while (opModeInInit()) {
             pivot.setPivotState(Pivot.PIVOT_STATES.INIT);
@@ -137,6 +141,7 @@ public class Teleop extends LinearOpMode {
                 case BUCKET:
                     pivot.setPivotState(Pivot.PIVOT_STATES.SCORING);
                     extendo.setExtendoState(Extendo.EXTENDO_STATES.BHIGH);
+                    diffy.setWristState(DifferentialWrist.WRIST_STATE.BUCKET);
 
                     if (gamepad1.b) {
                         claw.setClawState(Claw.CLAW_STATES.OPEN);
@@ -144,8 +149,21 @@ public class Teleop extends LinearOpMode {
                     break;
                 case HUNTING:
                     claw.setClawState(Claw.CLAW_STATES.OPEN);
+                    diffy.setWristState(DifferentialWrist.WRIST_STATE.PICKUP_PARA);
+
                     if (extendoTimer.seconds() >= RETRACT_TIME) {
                         pivot.setPivotState(Pivot.PIVOT_STATES.HUNTING);
+                        if (gamepad1.left_bumper) {
+                            switch (diffy.getWristState()) {
+                                case PICKUP_PARA:
+                                    diffy.setWristState(DifferentialWrist.WRIST_STATE.PIKCUP_VERT);
+                                    break;
+                                case PIKCUP_VERT:
+                                    diffy.setWristState(DifferentialWrist.WRIST_STATE.PICKUP_PARA);
+                                    break;
+                            }
+                        }
+
                         if (gamepad1.a) {
                             setRobotState(ROBOT_STATE.PICKUP);
 
@@ -182,8 +200,8 @@ public class Teleop extends LinearOpMode {
 
             pivot.update(telemetry);
             claw.update(telemetry);
-
             extendo.update(telemetry);
+            diffy.update(telemetry);
             
 
 
