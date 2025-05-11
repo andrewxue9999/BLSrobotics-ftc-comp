@@ -35,7 +35,7 @@ public class Extendo {
     public static int target = 0;   
 
     public static int RETRACTED = 0;
-    public static int BHIGH = 440;
+    public static int BHIGH = 520;
     public static int BLOW = 0;
     public static int CHIGH = 0;
     public static int CLOW = 0;

@@ -41,14 +41,14 @@ public class SwerveDrivetrain {
     private AnalogInput erightBack;
     private static double analogRange = 3.3;
 
-    public static final double E_RIGHT_FRONT_OFFSET = -Math.PI/2 + 5.0932; //2.0449; // RADianz
-    public static final double E_LEFT_FRONT_OFFSET = -Math.PI/2 + 5.1198; //1.14424;
-    public static final double E_LEFT_BACK_OFFSET = -Math.PI/2 + 4.8342; // 1.487;
-    public static final double E_RIGHT_BACK_OFFSET = -Math.PI/2 + 5.3826; //3.9565;
+    public static final double E_RIGHT_FRONT_OFFSET = -Math.PI / 2 + 5.0932; //2.0449; // RADianz
+    public static final double E_LEFT_FRONT_OFFSET = -Math.PI / 2 + 5.1198; //1.14424;
+    public static final double E_LEFT_BACK_OFFSET = -Math.PI / 2 + 4.8342; // 1.487;
+    public static final double E_RIGHT_BACK_OFFSET = -Math.PI / 2 + 5.3826; //3.9565;
 
     public final double TRACKWIDTH = 12.6378; //in
     public final double WHEELBASE = 12.6378;
-    private final double R = Math.hypot(TRACKWIDTH/2, WHEELBASE/2);
+    private final double R = Math.hypot(TRACKWIDTH / 2, WHEELBASE / 2);
     double[] wheelSpeeds = new double[4];
     double[] wheelAngles = new double[4];
     double max = 1.1;
@@ -56,7 +56,7 @@ public class SwerveDrivetrain {
 
     public IMU imu;
     private double trueHeading;
-//    private PIDController headingController;
+    //    private PIDController headingController;
 //    private final double HEADING_P = 0.2;
 //    private final double HEADING_I = 0;
 //    private final double HEADING_D = 0;
@@ -112,7 +112,7 @@ public class SwerveDrivetrain {
         for (SwerveModule module : swerveModules) module.read();
     }
 
-//    @Override
+    //    @Override
     public void set(Pose pose) {
 //        headingController.setPID(HEADING_P, HEADING_I, HEADING_D);
 
@@ -161,15 +161,18 @@ public class SwerveDrivetrain {
         }
     }
 
+
     public void write() {
 
         for (int i = 0; i < 4; i++) {
             SwerveModule m = swerveModules[i];
 
-            if (Math.abs(max) > 1) wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
+            if (Math.abs(max) > 1)
+                wheelSpeeds[i] /= max; // scale everything to <=1 while maintaining proportions
             m.setMotorPower(Math.abs(wheelSpeeds[i]) + 0.1 * Math.signum(wheelSpeeds[i]));
-            m.setTargetRotation((wheelAngles[i]) % (2*Math.PI));
+            m.setTargetRotation((wheelAngles[i]) % (2 * Math.PI));
 //            m.setTargetRotation(((wheelAngles[i]) + headingError) % (2*Math.PI));
+
 
             m.update();
         }

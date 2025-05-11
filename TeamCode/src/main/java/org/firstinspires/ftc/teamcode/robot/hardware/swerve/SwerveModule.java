@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 import com.acmerobotics.dashboard.config.Config;
 
@@ -57,7 +56,7 @@ public class SwerveModule {
     }
 
     public void read() {
-        position = encoder.getCurrentPosition() ;
+        position = encoder.getCurrentPosition();
     }
 
 
@@ -81,8 +80,7 @@ public class SwerveModule {
         if (Double.isNaN(power)) power = 0; // set 0 if null calculation
         if (Math.abs(error) <= DEADBAND) {
             power += 0;
-        }
-        else {
+        } else {
             power += K_STATIC * Math.signum(power);
         }
         servo.setPower(power);
@@ -93,21 +91,17 @@ public class SwerveModule {
         encoder.setInverted(invert);
     }
 
-    public double getModuleRotation() {
+    private double getModuleRotation() {
         return normalizeRadians(position);
     }
 
-    public double getTargetRotation() {
+    private double getTargetRotation() {
         return target;
     }
 
     public void setMotorPower(double power) {
         if (wheelFlipped) power *= -1;
         motor.setPower(power);
-    }
-
-    public void setServoPower(double power) {
-        servo.setPower(power);
     }
 
     public void setTargetRotation(double target) {
@@ -130,16 +124,4 @@ public class SwerveModule {
         return String.format(Locale.ENGLISH, "%s: Motor Flipped: %b \ncurrent position %.2f target position %.2f motor power = %.2f error=%.2f", name, wheelFlipped, getModuleRotation(), getTargetRotation(), power, error);
     }
 
-    public void setMode(DcMotor.RunMode runMode) {
-        motor.setMode(runMode);
-    }
-
-    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
-        motor.setZeroPowerBehavior(zeroPowerBehavior);
-    }
-
-    // yes, I am aware that the below function is effectively useless. -Andrew
-    public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients compensatedCoefficients) {
-        scontroller.setPID(P, I, D);
-    }
 }
