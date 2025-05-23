@@ -1,28 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot.opmode;
 
-import android.text.ParcelableSpan;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.ftccommon.internal.RunOnBoot;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.hardware.DifferentialWrist;
 import org.firstinspires.ftc.teamcode.robot.hardware.Extendo;
 import org.firstinspires.ftc.teamcode.robot.hardware.Pivot;
-import org.firstinspires.ftc.teamcode.robot.hardware.Wrist;
 import org.firstinspires.ftc.teamcode.robot.hardware.swerve.SwerveDrivetrain;
-import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.robot.hardware.Claw;
