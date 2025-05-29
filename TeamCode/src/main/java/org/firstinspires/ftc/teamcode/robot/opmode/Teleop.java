@@ -72,8 +72,7 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        drivetrain = new SwerveDrivetrain();
-        drivetrain.init(hardwareMap);
+        drivetrain = new SwerveDrivetrain(hardwareMap);
 
         fw = new SlewRateLimiter(fw_r);
         str = new SlewRateLimiter(str_r);
@@ -113,9 +112,9 @@ public class Teleop extends LinearOpMode {
 
             Pose drive = new Pose(driveY, driveX, azimuth);
 
-            drivetrain.set(drive);
-            drivetrain.write();
-            drivetrain.getTelemetry();
+//            drivetrain.set(drive);
+//            drivetrain.write();
+//            drivetrain.getTelemetry();
 
             if (gamepad1.dpad_up) {
                 setRobotState(ROBOT_STATE.BUCKET);
@@ -198,7 +197,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("dpad up down", gamepad1.dpad_up || gamepad1.dpad_down);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gamepads", (driveX + "") + (driveY + ""));
-            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
+//            telemetry.addData("Drivetrains", drivetrain.getTelemetry());
 
             telemetry.update();
 
