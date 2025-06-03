@@ -9,7 +9,7 @@ object Angle {
     private const val TAU = PI * 2
 
     /**
-     * Returns [angle] clamped to `[0, 2pi]`.
+     * Returns [angle] clamped to `[0, 2pi)`.
      *
      * @param angle angle measure in radians
      */

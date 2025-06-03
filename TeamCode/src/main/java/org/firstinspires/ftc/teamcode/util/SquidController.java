@@ -28,8 +28,19 @@ public class SquidController {
 
         timer.reset();
 
-        double output = Math.sqrt(Math.abs(kSQ)) * Math.signum(error) + derivative * kD + integralSum * kI;
-        return output;
+        return Math.sqrt(Math.abs(kSQ)) * Math.signum(error) + derivative * kD + integralSum * kI;
+    }
+
+    public double calculate (double sp, double cur) {
+        double error = cur - sp;
+
+        integralSum += error * timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
+        lastError = error;
+
+        timer.reset();
+
+        return Math.sqrt(Math.abs(kSQ)) * Math.signum(error) + derivative * kD + integralSum * kI;
     }
 
     public void setkSQ(double kS){

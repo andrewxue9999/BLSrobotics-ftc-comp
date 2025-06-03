@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -40,15 +41,14 @@ public class SwerveDrivetrain {
 
     private double speeds[] = new double[4];
     private double angles [] = new double[4];
-    private GoBildaPinpointDriver odo;
 
     Pose2D pos;
     /*WE ARE USING THE ROADRUNNER KOTLIN POSE ONLY FROM NOW ON BUT SINCE
     .GETPOSITION() RETURNS A ROBOTCORE POSE 2D WE HAVE TO USE THAT ONE HERE
      */
 
-    private final double TW = 321;
-    private  final double WB = 321;
+    private final double TW = 12.637;
+    private  final double WB = 12.637   ;
     private final double R = hypot(TW/2, WB/2);
 
     private final double[] MIN_WHEEL_POWER = {0.06, 0.06, 0.06, 0.06};
@@ -63,10 +63,9 @@ public class SwerveDrivetrain {
 
     private AbsoluteAnalogEncoder efrontLeft ,efrontRight, ebackLeft, ebackRight;
 
-    public static double FL_OFFSET  = 5.46, FR_OFFSET = 4.05, BL_OFFSET = 1.45 + PI/2, BR_OFFSET = 3.94;
+    public static double FL_OFFSET  = 2.328 + PI/2, FR_OFFSET = 0.866 + PI/2, BL_OFFSET = 4.552, BR_OFFSET = 0.873 + PI/2;
 
-    SlewRateLimiter fwdSlr = new SlewRateLimiter(4);
-    SlewRateLimiter strSlr = new SlewRateLimiter(4);
+
 
     public static double hKSQ = 0.3;
     private SquidController hController;
@@ -76,6 +75,8 @@ public class SwerveDrivetrain {
         mfrontRight = hwMap.get(DcMotorEx.class, "frontRight");
         mbackLeft = hwMap.get(DcMotorEx.class, "backLeft");
         mbackRight = hwMap.get(DcMotorEx.class, "backRight");
+
+        mfrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         sfrontLeft = hwMap.get(CRServo.class, "sfrontLeft");
         sfrontRight = hwMap.get(CRServo.class, "sfrontRight");
@@ -92,10 +93,10 @@ public class SwerveDrivetrain {
         ebackLeft = new AbsoluteAnalogEncoder(vbackLeft, 3.3);
         ebackRight = new AbsoluteAnalogEncoder(vbackRight, 3.3);
 
-        efrontLeft.zero(FL_OFFSET).setInverted(true);
-        efrontRight.zero(FR_OFFSET).setInverted(true);
-        ebackLeft.zero(BL_OFFSET).setInverted(true);
-        ebackRight.zero(BR_OFFSET).setInverted(true);
+        efrontLeft.zero(FL_OFFSET);
+        efrontRight.zero(FR_OFFSET);
+        ebackLeft.zero(BL_OFFSET);
+        ebackRight.zero(BR_OFFSET);
 
         frontLeft = new SwerveModule("frontLeft", mfrontLeft, sfrontLeft, efrontLeft);
         frontRight = new SwerveModule("frontRight", mfrontRight, sfrontRight, efrontRight);
@@ -107,7 +108,7 @@ public class SwerveDrivetrain {
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        modules = new SwerveModule[] { frontLeft, frontRight, backLeft, backRight };
+        modules = new SwerveModule[] { frontLeft, frontRight, backRight, backLeft };
 
         for (SwerveModule m : modules) {
             m.setTargetRotation(0);
@@ -119,12 +120,6 @@ public class SwerveDrivetrain {
             states[i] = modules[i].asState();
         }
 
-        odo = hwMap.get(GoBildaPinpointDriver.class, "pp");
-        odo.setOffsets(0.0, 38.6    , DistanceUnit.MM);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.resetPosAndIMU();
-
         hController = new SquidController(hKSQ);
     }
 
@@ -132,39 +127,27 @@ public class SwerveDrivetrain {
         for (SwerveModule module : modules) {
             module.read();
         }
-        odo.update();
-        pos = odo.getPosition();
     }
 
-    public void update() {
+    public void update(Telemetry telemetry) {
         for (SwerveModule module : modules) {
-            module.update();
+            module.update(telemetry);
         }
     }
 
-    public void setDrivePower(Vector2d powerVec, double rotation) {
-//        supposedHeading += rotation * 0.05;
-//        supposedHeading = Angle.normDelta(supposedHeading);
-//        double actualHeading = Angle.normDelta(pos.getHeading(AngleUnit.RADIANS));
-//
-//        double rcw = hController.calculate(supposedHeading - actualHeading);
-
-        powerVec = powerVec.rotated(pos.getHeading(AngleUnit.RADIANS));
+    public void setDrivePower(Pose powerVec) {
 
         double fwd = powerVec.getY();
         double str = powerVec.getX();
-        double rcw = rotation;
-
-        fwd = fwdSlr.calculate(fwd);
-        str = strSlr.calculate(str);
+        double rcw = powerVec.heading;
 
         double a = str - rcw * (WB / R);
         double b = str + rcw * (WB / R);
         double c = fwd - rcw * (TW / R);
         double d = fwd + rcw * (TW / R);
 
-        //speeds = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
-        speeds = new double[] {0, 0, 0, 0};
+        speeds = new double[]{hypot(b, c), hypot(b, d), hypot(a, d), hypot(a, c)};
+//        speeds = new double[] {0, 0, 0, 0};
         angles = new double[]{atan2(b, c), atan2(b, d), atan2(a, d), atan2(a, c)};
 
         double max = Math.max(Math.max(speeds[0], speeds[1]), Math.max(speeds[2], speeds[3]));
@@ -187,10 +170,9 @@ public class SwerveDrivetrain {
         for (SwerveModule m: modules) {
             telemetry.addData(m.getName() + " target", m.getTargetRotation());
             telemetry.addData(m.getName() + " rotation", m.getModuleRotation());
-            telemetry.addData(m.getName() + " error", m.getError());
             telemetry.addData(m.getName() + " servo power", m.getServoPower());
             telemetry.addData(m.getName() + " wheel vel", m.getWheelVelocity());
-            telemetry.addData(m.getName() + " flipped", m.getWheelFlipped());
+            telemetry.addData(m.getName() + " flipped", m.flipModifier());
         }
     }
 

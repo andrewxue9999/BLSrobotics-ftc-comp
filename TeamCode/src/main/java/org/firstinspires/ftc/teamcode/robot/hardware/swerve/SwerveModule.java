@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.AbsoluteAnalogEncoder;
 
 import java.util.Locale;
@@ -24,9 +25,9 @@ import java.util.Locale;
 
 @Config
 public class SwerveModule {
-    String name;
+    public String name;
 
-    public static double P = 0.6, I = 0, D = 0.1;
+    public static double P = 0.4, I = 0, D = 0.3;
     public static double K_STATIC = 0.03;
 
     public static double MAX_SERVO = 1, MAX_MOTOR = 1;
@@ -45,10 +46,9 @@ public class SwerveModule {
     public boolean wheelFlipped = false;
     private double target = 0.0;
     private double position = 0.0;
-    private double error = 0.0;
 
     public SwerveModule(String mName, DcMotorEx m, CRServo s, AbsoluteAnalogEncoder e) {
-        this.name = mName;
+        name = mName;
 
         motor = m;
         MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -64,28 +64,30 @@ public class SwerveModule {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-
     public void read() {
         position = encoder.getCurrentPosition();
     }
 
-    public void update() {
+    public void update(Telemetry telemetry) {
         rotationController.setPIDF(P, I, D, 0);
         double target = getTargetRotation(), current = getModuleRotation();
 
+        double error = normalizeRadians(target - current);
+        if (MOTOR_FLIPPING && Math.abs(error) > (Math.PI)) {
+            target = normalizeRadians(target - Math.PI);
+            wheelFlipped = true;
+        } else {
+            wheelFlipped = false;
+        }
+
         error = normalizeRadians(target - current);
-//        if (MOTOR_FLIPPING && Math.abs(error) > (Math.PI / 2)) {
-//            target = normalizeRadians(target - Math.PI);
-//            wheelFlipped = true;
-//        } else {
-//            wheelFlipped = false;
-//        }
-//
-//        error = normalizeRadians(target - current);
 
         double power = Range.clip(rotationController.calculate(0, error), -MAX_SERVO, MAX_SERVO);
         if (Double.isNaN(power)) power = 0;
         servo.setPower(power + (Math.abs(error) > 0.02 ? K_STATIC : 0) * Math.signum(power));
+
+        telemetry.addData(this.getName () + " error: ", error);
+
     }
 
     public double getTargetRotation() {
@@ -97,7 +99,7 @@ public class SwerveModule {
     }
 
     public void setMotorPower(double power) {
-//        if (wheelFlipped) power *= -1;
+        if (wheelFlipped) power *= -1;
         lastMotorPower = power;
         motor.setPower(power);
     }
@@ -177,15 +179,9 @@ public class SwerveModule {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
-    public double getError() {
-        return this.error;
-    }
-
     public String getName() {
         return this.name;
     }
 
-    public boolean getWheelFlipped() {
-        return this.wheelFlipped;
-    }
+
 }
