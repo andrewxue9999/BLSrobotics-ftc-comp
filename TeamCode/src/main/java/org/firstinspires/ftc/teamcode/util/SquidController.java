@@ -15,6 +15,12 @@ public class SquidController {
         this.kSQ = kS;
     }
 
+    public SquidController(double kS, double kI, double kD){
+        this.kSQ = kS;
+        this.kI = kI;
+        this.kD = kD;
+    }
+
     /**
      *
      *

@@ -189,7 +189,7 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
             FAULT_Y_POD_NOT_DETECTED - The device does not detect a Y pod plugged in
             FAULT_BAD_READ - The firmware detected a bad I²C read, if a bad read is detected, the device status is updated and the previous position is reported
             */
-            telemetry.addData("Status", odo.getDeviceStatus());
+            telemetry.addData("Status ", odo.getDeviceStatus());
 
             telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
 

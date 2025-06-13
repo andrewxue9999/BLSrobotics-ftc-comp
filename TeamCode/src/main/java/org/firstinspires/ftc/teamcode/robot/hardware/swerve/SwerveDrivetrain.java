@@ -75,9 +75,7 @@ public class SwerveDrivetrain {
         mfrontRight = hwMap.get(DcMotorEx.class, "frontRight");
         mbackLeft = hwMap.get(DcMotorEx.class, "backLeft");
         mbackRight = hwMap.get(DcMotorEx.class, "backRight");
-
-        mfrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        
         sfrontLeft = hwMap.get(CRServo.class, "sfrontLeft");
         sfrontRight = hwMap.get(CRServo.class, "sfrontRight");
         sbackLeft = hwMap.get(CRServo.class, "sbackLeft");

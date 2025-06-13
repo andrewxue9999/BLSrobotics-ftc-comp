@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.util.SquidController;
 @TeleOp(name = "TeleOp Swerve", group = "Drive")
 public class Swerce extends OpMode {
     private double oldTime = 0.0;
-    private VoltageSensor voltageSensor;
 
     private double voltz;
 
@@ -32,6 +31,9 @@ public class Swerce extends OpMode {
     private double currentHeading;
     private double supposedHeading = 0.0;
     private SquidController hController;
+    public static double hKSQ = 0.5;
+    public static double hD = 0.0;
+    public static double hI = 0.0;
 
     SlewRateLimiter fwdSlr = new SlewRateLimiter(4);
     SlewRateLimiter strSlr = new SlewRateLimiter(4);
@@ -46,8 +48,9 @@ public class Swerce extends OpMode {
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.resetPosAndIMU();
 
+        hController = new SquidController(hKSQ, hI, hD);
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        voltageSensor = hardwareMap.get(VoltageSensor.class, "voltz");
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset(DistanceUnit.MM));
@@ -60,7 +63,6 @@ public class Swerce extends OpMode {
     @Override
     public void loop() {
         odo.update();
-        voltz = voltageSensor.getVoltage();
 
         if (gamepad1.start) {
             odo.resetPosAndIMU();
@@ -68,20 +70,20 @@ public class Swerce extends OpMode {
 
         double y = -gamepad1.left_stick_y; // Y is inverted
         double x = gamepad1.left_stick_x;
-        double turn = supposedHeading += joystickScalar(gamepad1.right_stick_x, 0.01) * 0.05;
+        double turn = joystickScalar(gamepad1.right_stick_x, 0.01);
 
         Vector2d trans = new Vector2d(x, y); //DIS DA VECTOR2D FROM TEAMCODE.UTIL
 
         currentHeading = Angle.normDelta(odo.getHeading(AngleUnit.RADIANS));
-        turn = Angle.normDelta(turn);
+//        turn = Angle.normDelta(turn);
 
         double headingError = Angle.normDelta(turn - currentHeading);
 
-        double headingCorrection = -hController.calculate(0, headingError) * 12.4 / voltz;
+        double headingCorrection = -hController.calculate(0, headingError);
 
         trans.rotated(currentHeading);
 
-        Pose drive = new Pose(fwdSlr.calculate(trans.getX()), strSlr.calculate(trans.getY()), headingCorrection);
+        Pose drive = new Pose(fwdSlr.calculate(trans.getX()), strSlr.calculate(trans.getY()), turn);
 
         drivetrain.maintainHeading = Math.abs(gamepad1.left_stick_x) < 0.05 &&
                 Math.abs(gamepad1.left_stick_y) < 0.05 &&

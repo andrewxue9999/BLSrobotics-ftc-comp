@@ -112,9 +112,8 @@ public class Teleop extends LinearOpMode {
 
             Pose drive = new Pose(driveY, driveX, azimuth);
 
-//            drivetrain.set(drive);
-//            drivetrain.write();
-//            drivetrain.getTelemetry();
+            drivetrain.setDrivePower(drive);
+            drivetrain.update(telemetry);
 
             if (gamepad1.dpad_up) {
                 setRobotState(ROBOT_STATE.BUCKET);
